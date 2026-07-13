@@ -8,556 +8,556 @@ msgstr ""
 
 # SigMaker
 msgid "action.sigmaker"
-msgstr ""
+msgstr "SigMaker"
 
 # Show the signature maker dialog.
 msgid "action.sigmaker_tt"
-msgstr ""
+msgstr "显示签名制作器对话框。"
 
 # Start Profiling
 msgid "action.start_profiling"
-msgstr ""
+msgstr "开始性能分析"
 
 # Start a cProfile session capturing subsequent SigMaker activity.
 msgid "action.start_profiling_tt"
-msgstr ""
+msgstr "启动 cProfile 会话，捕获后续 SigMaker 活动。"
 
 # Stop Profiling
 msgid "action.stop_profiling"
-msgstr ""
+msgstr "停止性能分析"
 
 # Stop the active cProfile session and write the dump to the user IDA dir.
 msgid "action.stop_profiling_tt"
-msgstr ""
+msgstr "停止活动的 cProfile 会话，将转储写入用户 IDA 目录。"
 
 # Error: End address %(end_addr)s must be greater than start address %(start_addr)s.
 msgid "addr_error"
-msgstr ""
+msgstr "错误：结束地址 %(end_addr)s 必须大于开始地址 %(start_addr)s。"
 
 # No end address selected, using line end: %(ea)s
 msgid "addr_no_end"
-msgstr ""
+msgstr "未选择结束地址，使用行尾：%(ea)s"
 
 # Cancel
 msgid "cancel"
-msgstr ""
+msgstr "取消"
 
 # Error setting clipboard text: %(e)s
 msgid "clipboard_error"
-msgstr ""
+msgstr "设置剪贴板文本出错：%(e)s"
 
 # Failed to copy to clipboard!
 msgid "clipboard_fail"
-msgstr ""
+msgstr "复制到剪贴板失败！"
 
 # Continue?
 msgid "continue"
-msgstr ""
+msgstr "继续？"
 
 # Continue?
 msgid "continue_question"
-msgstr ""
+msgstr "继续？"
 
 # Continue execution?
 msgid "continue_title"
-msgstr ""
+msgstr "继续执行？"
 
 # Error: Empty signature\n
 msgid "empty_sig"
-msgstr ""
+msgstr "错误：空签名\n"
 
 # Enter end address for selection:
 msgid "enter_end_addr"
-msgstr ""
+msgstr "输入选择范围的结束地址："
 
 # Enter a signature
 msgid "enter_sig"
-msgstr ""
+msgstr "输入签名"
 
 # Executing...
 msgid "executing"
-msgstr ""
+msgstr "执行中..."
 
 # Function signature (offset +%(offset)s into function %(func_start)s%(func_name)s):\n
 msgid "fn_sig"
-msgstr ""
+msgstr "函数签名（偏移 +%(offset)s 进入函数 %(func_start)s%(func_name)s）：\n"
 
 # C Bytes Signature + Bitmask
 msgid "form.main.bitmask_sig"
-msgstr ""
+msgstr "C 字节签名 + 位掩码"
 
 # C byte array + bitmask
 msgid "form.main.bitmask_sig_tt"
-msgstr ""
+msgstr "C 字节数组 + 位掩码"
 
 # Continue when leaving function scope
 msgid "form.main.continue_outside"
-msgstr ""
+msgstr "离开函数作用域时继续"
 
 # Don't stop at function boundary
 msgid "form.main.continue_outside_tt"
-msgstr ""
+msgstr "不在函数边界处停止"
 
 # Copy selected code
 msgid "form.main.copy_code"
-msgstr ""
+msgstr "复制所选代码"
 
 # Copy selected code bytes in the specified output format
 msgid "form.main.copy_code_tt"
-msgstr ""
+msgstr "以指定输出格式复制所选代码字节"
 
 # Create unique signature for current code address
 msgid "form.main.create_unique"
-msgstr ""
+msgstr "为当前代码地址创建唯一签名"
 
 # Create a unique code signature for the current address
 msgid "form.main.create_unique_tt"
-msgstr ""
+msgstr "为当前地址创建唯一代码签名"
 
 # Enable continue prompt (opt-in)
 msgid "form.main.enable_prompt"
-msgstr ""
+msgstr "启用继续提示（可选）"
 
 # Show periodic 'Continue?' prompts
 msgid "form.main.enable_prompt_tt"
-msgstr ""
+msgstr "显示定期「继续？」提示"
 
 # Find shortest unique signature for current function
 msgid "form.main.find_fn_sig"
-msgstr ""
+msgstr "查找当前函数的最短唯一签名"
 
 # Find the shortest unique signature anywhere inside the current function
 msgid "form.main.find_fn_sig_tt"
-msgstr ""
+msgstr "在当前函数内查找最短唯一签名"
 
 # Find shortest XREF signature for current data or code address
 msgid "form.main.find_xref"
-msgstr ""
+msgstr "为当前数据或代码地址查找最短 XREF 签名"
 
 # Create code signatures for xrefs of the selected address
 msgid "form.main.find_xref_tt"
-msgstr ""
+msgstr "为所选地址的引用创建代码签名"
 
 # IDA Signature
 msgid "form.main.ida_sig"
-msgstr ""
+msgstr "IDA 签名"
 
 # IDA style: E8 ? ? ? ? 45 33 F6
 msgid "form.main.ida_sig_tt"
-msgstr ""
+msgstr "IDA 格式：E8 ? ? ? ? 45 33 F6"
 
 # C Byte Array String Signature + String mask
 msgid "form.main.mask_sig"
-msgstr ""
+msgstr "C 字节数组签名 + 字符串掩码"
 
 # C byte array + mask string
 msgid "form.main.mask_sig_tt"
-msgstr ""
+msgstr "C 字节数组 + 掩码字符串"
 
 # Operand types...
 msgid "form.main.operand_types"
-msgstr ""
+msgstr "操作数类型..."
 
 # Other options...
 msgid "form.main.other_options"
-msgstr ""
+msgstr "其他选项..."
 
 # Output format
 msgid "form.main.output_format"
-msgstr ""
+msgstr "输出格式"
 
 # Output partial signature on cancel (opt-in)
 msgid "form.main.partial_on_cancel"
-msgstr ""
+msgstr "取消时输出部分签名（可选）"
 
 # Output partial signature on cancel
 msgid "form.main.partial_on_cancel_tt"
-msgstr ""
+msgstr "取消时输出部分签名"
 
 # Quick Options
 msgid "form.main.quick_options"
-msgstr ""
+msgstr "快速选项"
 
 # Limit uniqueness and search to the containing segment (opt-in)
 msgid "form.main.scope_to_segment"
-msgstr ""
+msgstr "将唯一性和搜索限定到包含段（可选）"
 
 # Scope uniqueness/search to containing segment
 msgid "form.main.scope_to_segment_tt"
-msgstr ""
+msgstr "将唯一性/搜索限定到所在段"
 
 # Search for a signature
 msgid "form.main.search_sig"
-msgstr ""
+msgstr "搜索签名"
 
 # Search the database for a signature pattern
 msgid "form.main.search_sig_tt"
-msgstr ""
+msgstr "在数据库中搜索签名模式"
 
 # Select action
 msgid "form.main.select_action"
-msgstr ""
+msgstr "选择操作"
 
 # Wildcard optimized / combined instructions
 msgid "form.main.wildcard_opt"
-msgstr ""
+msgstr "对优化/合并指令使用通配符"
 
 # Wildcard combined instructions
 msgid "form.main.wildcard_opt_tt"
-msgstr ""
+msgstr "通配合并指令"
 
 # Wildcards for operands
 msgid "form.main.wildcards"
-msgstr ""
+msgstr "操作数通配符"
 
 # Wildcard operands to improve signature stability
 msgid "form.main.wildcards_tt"
-msgstr ""
+msgstr "通配操作数以提高签名稳定性"
 
 # x64Dbg Signature
 msgid "form.main.x64dbg_sig"
-msgstr ""
+msgstr "x64Dbg 签名"
 
 # x64Dbg style: E8 ?? ?? ?? ?? 45 33 F6
 msgid "form.main.x64dbg_sig_tt"
-msgstr ""
+msgstr "x64Dbg 格式：E8 ?? ?? ?? ?? 45 33 F6"
 
 # Arbitrary text stored in the operand
 msgid "form.operand.arbitrary_text"
-msgstr ""
+msgstr "操作数中存储的任意文本"
 
 # ARM condition as an operand
 msgid "form.operand.arm_cond"
-msgstr ""
+msgstr "ARM 条件操作数"
 
 # Control Register
 msgid "form.operand.control_reg"
-msgstr ""
+msgstr "控制寄存器"
 
 # Coprocessor register list (for CDP)
 msgid "form.operand.coproc_list"
-msgstr ""
+msgstr "协处理器寄存器列表（用于 CDP）"
 
 # Coprocessor register (for LDC/STC)
 msgid "form.operand.coproc_reg"
-msgstr ""
+msgstr "协处理器寄存器（用于 LDC/STC）"
 
 # crbit
 msgid "form.operand.crbit"
-msgstr ""
+msgstr "crbit"
 
 # crfield
 msgid "form.operand.crfield"
-msgstr ""
+msgstr "crfield"
 
 # Device control register
 msgid "form.operand.dcr"
-msgstr ""
+msgstr "设备控制寄存器"
 
 # Debug Register
 msgid "form.operand.debug_reg"
-msgstr ""
+msgstr "调试寄存器"
 
 # Memory Ref [Base Reg + Index Reg + Displacement]
 msgid "form.operand.displ"
-msgstr ""
+msgstr "内存引用 [基址寄存器 + 索引寄存器 + 偏移量]"
 
 # Immediate Far Address (CODE)
 msgid "form.operand.far"
-msgstr ""
+msgstr "立即远地址（CODE）"
 
 # Floating point register list
 msgid "form.operand.fp_list"
-msgstr ""
+msgstr "浮点寄存器列表"
 
 # Floating Point Register
 msgid "form.operand.fp_reg"
-msgstr ""
+msgstr "浮点寄存器"
 
 # General Register (al, ax, es, ds...)
 msgid "form.operand.general_reg"
-msgstr ""
+msgstr "通用寄存器（al, ax, es, ds...）"
 
 # Immediate Value
 msgid "form.operand.imm"
-msgstr ""
+msgstr "立即值"
 
 # Direct Memory Reference (DATA)
 msgid "form.operand.mem_ref"
-msgstr ""
+msgstr "直接内存引用（DATA）"
 
 # MMX Register
 msgid "form.operand.mmx_reg"
-msgstr ""
+msgstr "MMX 寄存器"
 
 # Immediate Near Address (CODE)
 msgid "form.operand.near"
-msgstr ""
+msgstr "立即近地址（CODE）"
 
 # Opmask Register
 msgid "form.operand.opmask_reg"
-msgstr ""
+msgstr "操作码掩码寄存器"
 
 # Memory Ref [Base Reg + Index Reg]
 msgid "form.operand.phrase"
-msgstr ""
+msgstr "内存引用 [基址寄存器 + 索引寄存器]"
 
 # Register list (for LDM/STM)
 msgid "form.operand.reg_list"
-msgstr ""
+msgstr "寄存器列表（用于 LDM/STM）"
 
 # Select operand types that should be wildcarded:
 msgid "form.operand.select_hint"
-msgstr ""
+msgstr "选择应通配的操作数类型："
 
 # SH & MB & ME
 msgid "form.operand.sh_mb_me"
-msgstr ""
+msgstr "SH & MB & ME"
 
 # Special purpose register
 msgid "form.operand.spr"
-msgstr ""
+msgstr "专用寄存器"
 
 # Wildcardable Operands
 msgid "form.operand.title"
-msgstr ""
+msgstr "可通配操作数"
 
 # Trace Register
 msgid "form.operand.trace_reg"
-msgstr ""
+msgstr "跟踪寄存器"
 
 # Two FPRs
 msgid "form.operand.two_fpr"
-msgstr ""
+msgstr "双 FPR"
 
 # (Unused)
 msgid "form.operand.unused"
-msgstr ""
+msgstr "（未使用）"
 
 # XMM Register
 msgid "form.operand.xmm_reg"
-msgstr ""
+msgstr "XMM 寄存器"
 
 # YMM Register
 msgid "form.operand.ymm_reg"
-msgstr ""
+msgstr "YMM 寄存器"
 
 # ZMM Register
 msgid "form.operand.zmm_reg"
-msgstr ""
+msgstr "ZMM 寄存器"
 
 # Maximum single signature length
 msgid "form.options.max_single"
-msgstr ""
+msgstr "最大单个签名长度"
 
 # Maximum length of a single signature in bytes
 msgid "form.options.max_single_tt"
-msgstr ""
+msgstr "单个签名最大长度（字节）"
 
 # Maximum xref signature length
 msgid "form.options.max_xref"
-msgstr ""
+msgstr "最大 xref 签名长度"
 
 # Maximum length of an XREF signature in bytes
 msgid "form.options.max_xref_tt"
-msgstr ""
+msgstr "XREF 签名最大长度（字节）"
 
 # Prompt interval (seconds, -1 disables)
 msgid "form.options.prompt_interval"
-msgstr ""
+msgstr "提示间隔（秒，-1 禁用）"
 
 # Seconds before the first 'Continue?' prompt. -1 disables the prompt.
 msgid "form.options.prompt_interval_tt"
-msgstr ""
+msgstr "首次「继续？」提示触发前的秒数。-1 完全禁用提示。"
 
 # Options
 msgid "form.options.title"
-msgstr ""
+msgstr "选项"
 
 # Print top X XREF signatures
 msgid "form.options.top_x"
-msgstr ""
+msgstr "打印前 X 个 XREF 签名"
 
 # Maximum number of shortest XREF signatures to display
 msgid "form.options.top_x_tt"
-msgstr ""
+msgstr "生成 xref 签名时打印最短的前 X 个签名"
 
 # Invalid action!\n
 msgid "invalid_action"
-msgstr ""
+msgstr "无效操作！\n"
 
 # Detected mask \"%(mask)s\" but failed to match corresponding bytes\n
 msgid "mask_detect_fail"
-msgstr ""
+msgstr "检测到掩码 \"%(mask)s\"，但未能匹配对应的字节\n"
 
 # Match @ %(addr)s\n
 msgid "match_at"
-msgstr ""
+msgstr "匹配 @ %(addr)s\n"
 
 # %(count)d matches
 msgid "match_count"
-msgstr ""
+msgstr "%(count)d 个匹配"
 
 # %(count)d matches so far
 msgid "match_count_sofar"
-msgstr ""
+msgstr "%(count)d 个匹配"
 
 # match count unavailable
 msgid "match_count_unavailable"
-msgstr ""
+msgstr "匹配数不可用"
 
 # Match @ %(addr)s in %(func)s\n
 msgid "match_in"
-msgstr ""
+msgstr "匹配 @ %(addr)s 于 %(func)s\n"
 
 # No unique signature inside function %(func_start)s; trying xref signatures...\n
 msgid "no_fn_sig"
-msgstr ""
+msgstr "函数 %(func_start)s 内无唯一签名；正在尝试 xref 签名...\n"
 
 # No signature entered!\n
 msgid "no_sig_entered"
-msgstr ""
+msgstr "未输入签名！\n"
 
 # No unique signature found for function %(func_start)s (no unique sig within body and no usable xrefs)\n
 msgid "no_sig_found"
-msgstr ""
+msgstr "未找到函数 %(func_start)s 的唯一签名（函数体内无唯一签名且无可用 xref）\n"
 
 # No XREFs have been found for your address\n
 msgid "no_xrefs"
-msgstr ""
+msgstr "未找到该地址的 XREF\n"
 
 # OK
 msgid "ok"
-msgstr ""
+msgstr "确定"
 
 # Operation canceled by user\n
 msgid "operation_canceled"
-msgstr ""
+msgstr "用户已取消操作\n"
 
 # Partial signature (NOT unique, %(count_str)s)
 msgid "partial_unique"
-msgstr ""
+msgstr "部分签名（不唯一，%(count_str)s）"
 
 # Partial signature (NOT unique, %(count_str)s) for %(address)s%(func)s
 msgid "partial_unique_for"
-msgstr ""
+msgstr "部分签名（不唯一，%(count_str)s）地址 %(address)s%(func)s"
 
 # Place cursor inside a function first.\n
 msgid "place_cursor_fn"
-msgstr ""
+msgstr "请先将光标放在函数内。\n"
 
 # Select location in disassembly and press CTRL+ALT+S to open menu
 msgid "plugin_help"
-msgstr ""
+msgstr "在反汇编中选择位置，按 CTRL+ALT+S 打开菜单"
 
 # %(name)s v%(version)s for IDA Pro by %(author)s
 msgid "plugin_info"
-msgstr ""
+msgstr "%(name)s v%(version)s 适用于 IDA Pro，作者 %(author)s"
 
 # Copy selected code\n\nBuilding a signature for the selected address range.\n\nPress Cancel to stop
 msgid "progress.copy_code"
-msgstr ""
+msgstr "复制所选代码\n\n正在为所选地址范围构建签名。\n\n按取消停止"
 
 # Please stand by, copying the segment...
 msgid "progress.copy_segment"
-msgstr ""
+msgstr "请稍候，正在复制段..."
 
 # Please stand by, copying segments...
 msgid "progress.copy_segments"
-msgstr ""
+msgstr "请稍候，正在复制段..."
 
 # Create unique signature (from cursor address)\n\nGrowing a pattern from the current address until it matches exactly one place in the binary.\n\nPress Cancel to stop
 msgid "progress.create_unique"
-msgstr ""
+msgstr "创建唯一签名（从光标地址开始）\n\n从当前地址增长模式，直到它匹配\n二进制中唯一的位置。\n\n按取消停止"
 
 # Find shortest function signature\n\nTrying every instruction in the function as a start point; growing each until unique and keeping the shortest.\n\nPress Cancel to stop
 msgid "progress.find_fn_sig"
-msgstr ""
+msgstr "查找最短函数签名\n\n尝试函数中的每条指令作为起点；\n逐条增长直到唯一并保留最短的。\n\n按取消停止"
 
 # Find shortest function signature\nTrying every instruction as a start point; keeping the shortest unique one.\n\nFunction:     %(fn_bounds)s  (%(fn_size)d bytes)\nAnchor (#%(idx)d): %(anchor)s\nInner search: %(inner_bounds)s  (%(inner_length)d bytes, %(inner_matches_str)s)\nBest found:   %(best)s\nCandidates:   %(candidates_count)d unique so far\nElapsed:      %(elapsed)d\n\nPress Cancel to stop
 msgid "progress.fn_sig_detail"
-msgstr ""
+msgstr "查找最短函数签名\n尝试每条指令作为起点；保留最短的唯一签名。\n\n函数：    %(fn_bounds)s  （%(fn_size)d 字节）\n锚点（#%(idx)d）：%(anchor)s\n内部搜索：%(inner_bounds)s  （%(inner_length)d 字节，%(inner_matches_str)s）\n最佳结果：%(best)s\n候选：    %(candidates_count)d 个唯一\n已用：    %(elapsed)d\n\n按取消停止"
 
 # Processing (%(idx)d) | Elapsed: %(elapsed)ds
 msgid "progress.processing_idx"
-msgstr ""
+msgstr "处理中 (%(idx)d) | 已用：%(elapsed)ds"
 
 # Processing (%(idx)d/%(total)d) | Elapsed: %(elapsed)ds
 msgid "progress.processing_total"
-msgstr ""
+msgstr "处理中 (%(idx)d/%(total)d) | 已用：%(elapsed)ds"
 
 # Search for a signature\n\nScanning %(scope)s for your pattern.\n\nPress Cancel to stop
 msgid "progress.search_sig"
-msgstr ""
+msgstr "搜索签名\n\n正在扫描 %(scope)s 中的模式。\n\n按取消停止"
 
 # Create unique signature (from cursor address)\nGrowing a pattern from the current address until it matches\nexactly one place in the binary.\n\nLength:  %(length)s bytes\nMatches: %(matches)s\nElapsed: %(elapsed)s\n\nPress Cancel to stop
 msgid "progress.unique_sig_detail"
-msgstr ""
+msgstr "创建唯一签名（从光标地址开始）\n从当前地址增长模式，直到它匹配\n二进制中唯一的位置。\n\n长度：%(length)s 字节\n匹配数：%(matches)s\n已用：%(elapsed)s\n\n按取消停止"
 
 # Find shortest XREF signature\n\nProcessing xref %(i)d of %(total)d (%(pct).1f%%)...\n\nSuitable Signatures: %(suitable)d\nShortest Signature: %(shortest)d Bytes
 msgid "progress.xref_progress"
-msgstr ""
+msgstr "查找最短 XREF 签名\n\n正在处理 xref %(i)d / %(total)d (%(pct).1f%%)...\n\n合适签名：%(suitable)d\n最短签名：%(shortest)d 字节"
 
 # %(func)s has been running for %(time)s.
 msgid "running_for"
-msgstr ""
+msgstr "%(func)s 已运行 %(time)s。"
 
 # scanning...
 msgid "scanning"
-msgstr ""
+msgstr "扫描中..."
 
 # Select a range to copy the code!\n
 msgid "select_range"
-msgstr ""
+msgstr "请选择要复制代码的范围！\n"
 
 # Signature is already %(len)d bytes. Continue?
 msgid "sig_already"
-msgstr ""
+msgstr "签名已达到 %(len)d 字节。继续？"
 
 # Error: %(msg)s\n
 msgid "sig_error"
-msgstr ""
+msgstr "错误：%(msg)s\n"
 
 # Signature for %(address)s%(func)s: %(fmted)s\n
 msgid "sig_for"
-msgstr ""
+msgstr "地址 %(address)s%(func)s 的签名：%(fmted)s\n"
 
 # Signature does not match!\n
 msgid "sig_no_match"
-msgstr ""
+msgstr "签名不匹配！\n"
 
 # %(prefix)s: %(fmted)s\n
 msgid "sig_prefix"
-msgstr ""
+msgstr "%(prefix)s：%(fmted)s\n"
 
 # Signature: %(fmted)s\n
 msgid "sig_result"
-msgstr ""
+msgstr "签名：%(fmted)s\n"
 
 # Signature: %(sig)s\n
 msgid "sig_search_result"
-msgstr ""
+msgstr "签名：%(sig)s\n"
 
 # %(size)d bytes
 msgid "size_bytes"
-msgstr ""
+msgstr "%(size)d 字节"
 
 # Top %(top)d Signatures out of %(total)d xrefs:\n
 msgid "top_xrefs"
-msgstr ""
+msgstr "前 %(top)d 个签名（共 %(total)d 个 xref）：\n"
 
 # Unrecognized signature type\n
 msgid "unrecognized_sig"
-msgstr ""
+msgstr "无法识别的签名类型\n"
 
 # Falling back to xref signatures...\n\nPress Cancel to stop
 msgid "xref_fallback"
-msgstr ""
+msgstr "回退到 xref 签名...\n\n按取消停止"
 
 # XREF Signature #%(num)d @ %(addr)s%(func)s: %(sig)s\n
 msgid "xref_sig"
-msgstr ""
+msgstr "XREF 签名 #%(num)d @ %(addr)s%(func)s：%(sig)s\n"
 
 # Xref signature into %(func_start)s (from %(addr)s):\n
 msgid "xref_sig_into"
-msgstr ""
+msgstr "指向 %(func_start)s 的 Xref 签名（来自 %(addr)s）：\n"
