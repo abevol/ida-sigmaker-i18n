@@ -2,7 +2,7 @@
     "IDAMetadataDescriptorVersion": 1,
     "plugin": {
         "name": "SigMaker",
-        "entryPoint": "src/sigmaker/__init__.py",
+        "entryPoint": "sigmaker_loader.py",
         "categories": [
             "collaboration-and-productivity",
             "decompilation",

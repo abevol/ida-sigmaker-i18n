@@ -35,14 +35,20 @@ jobs:
                       # macos-14+ (including latest) are ARM64 runners
                       runs-on: macos-latest
 
-        steps:
+          steps:
             - uses: actions/checkout@v5
+
+            - name: Compile translations
+              run: |
+                  python tools/po2mo.py src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.po src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.mo
 
             - name: Build wheels
               uses: pypa/cibuildwheel@v3.1.4
               env:
                   # Build CPython 3.10+ wheels only (as required by project)
                   CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-*"
+                  # Compile translations in the isolated build container
+                  CIBW_BEFORE_BUILD: "python tools/po2mo.py src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.po src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.mo"
                   # if no annotation for this build group, this shouldn't be skipped
                   # CIBW_SKIP: "pp*"
               with:
@@ -77,6 +83,10 @@ jobs:
                   pip install --upgrade packaging==25.0
                   echo "Installed versions:"
                   pip list | grep -E "(twine|packaging|setuptools|build)"
+
+            - name: Compile translations
+              run: |
+                  python tools/po2mo.py src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.po src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.mo
 
             - &build-sdist
               name: Build sdist

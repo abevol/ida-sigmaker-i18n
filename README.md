@@ -1,3 +1,7 @@
+[**English**](./README.md) | [**中文**](./README.zh_CN.md)
+
+---
+
 # Signature Maker Plugin for IDA Pro 9.0+
 
 <img src="https://github.com/mahmoudimus/ida-sigmaker/blob/main/assets/sigmaker-logo.png?raw=true" width="104px" height="100px" alt="Magnifying glass with the word 'sigmaker' and a cross-hair over the 'A' in sigmaker" /> [![ida-sigmaker tests](https://github.com/mahmoudimus/ida-sigmaker/actions/workflows/python.yml/badge.svg)](https://github.com/mahmoudimus/ida-sigmaker/actions/workflows/python.yml)
@@ -42,19 +46,29 @@ sigmaker's main value proposition is its cross-platform (Windows, macOS, Linux) 
 
 ### Quick Install
 
-- Copy [`src/sigmaker/__init__.py`](./src/sigmaker/__init__.py) into the /plugins/ folder to the plugin directory!
-- Rename it to `sigmaker.py`
+- Copy [`src/sigmaker_loader.py`](./src/sigmaker_loader.py) and the [`src/sigmaker/`](./src/sigmaker/) directory into your IDA Pro `plugins/` folder
 - *OPTIONALLY*, if you would like `SIMD` speedups, just `pip install sigmaker`
 - Restart IDA Pro.
 
 ### From Releases
 
-- Download the latest conveniently renamed `sigmaker.py` release from the [Releases page](https://github.com/mahmoudimus/ida-sigmaker/releases)
-- Copy it to your IDA Pro plugins directory
+- Download the latest `sigmaker-*.zip` from the [Releases page](https://github.com/mahmoudimus/ida-sigmaker/releases)
+- Extract the zip contents into your IDA Pro `plugins/` directory
 - *OPTIONALLY*, if you would like `SIMD` speedups, just `pip install sigmaker`
 - Restart IDA Pro
 
-That's it!
+Your `plugins/` directory should look like this after extraction:
+
+```
+plugins/
+├── sigmaker_loader.py   (loaded by IDA on startup)
+└── sigmaker/
+    ├── __init__.py       (signature maker logic)
+    ├── i18n.py           (multi-language support)
+    └── locale/           (translations)
+```
+
+The plugin supports both **Chinese and English** interfaces. The language is automatically detected from your system locale. If your system language is Chinese, the plugin UI will display in Chinese; otherwise it falls back to English.
 
 ### Install with hcli
 
@@ -73,6 +87,8 @@ hcli plugin install SigMaker
 ```
 
 `hcli` downloads the plugin and places it in `$IDAUSR/plugins` (`~/.idapro/plugins` on macOS/Linux), where IDA loads it on the next launch. Requires IDA 9.0+. For `SIMD` speedups, also run `pip install sigmaker` as above.
+
+The plugin uses a loader (`sigmaker_loader.py`) that delegates to a `sigmaker/` subdirectory containing the plugin logic, i18n module, and translation files. This keeps the business code organized and enables clean updates — just replace the `sigmaker/` subdirectory.
 
 ### Need to find your plugin directory?
 

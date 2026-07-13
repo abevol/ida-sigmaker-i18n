@@ -1,3 +1,7 @@
+[**English**](./README.md) | [**中文**](./README.zh_CN.md)
+
+---
+
 # Signature Maker 插件 —— 适用于 IDA Pro 9.0+
 
 <img src="https://github.com/mahmoudimus/ida-sigmaker/blob/main/assets/sigmaker-logo.png?raw=true" width="104px" height="100px" alt="放大镜，内含 'sigmaker' 字样，字母 'A' 上带有十字准线" /> [![ida-sigmaker 测试](https://github.com/mahmoudimus/ida-sigmaker/actions/workflows/python.yml/badge.svg)](https://github.com/mahmoudimus/ida-sigmaker/actions/workflows/python.yml)
@@ -42,19 +46,29 @@ sigmaker 的核心价值在于其跨平台（Windows、macOS、Linux）的 Pytho
 
 ### 快速安装
 
-- 将 [`src/sigmaker/__init__.py`](./src/sigmaker/__init__.py) 复制到 /plugins/ 文件夹对应的插件目录！
-- 将其重命名为 `sigmaker.py`
+- 将 [`src/sigmaker_loader.py`](./src/sigmaker_loader.py) 和 [`src/sigmaker/`](./src/sigmaker/) 目录复制到你的 IDA Pro `plugins/` 文件夹
 - *可选*，如果你想要 `SIMD` 加速，只需执行 `pip install sigmaker`
 - 重启 IDA Pro。
 
 ### 从 Releases 安装
 
-- 从 [Releases 页面](https://github.com/mahmoudimus/ida-sigmaker/releases) 下载最新已重命名的 `sigmaker.py` 发布文件
-- 将其复制到你的 IDA Pro 插件目录
+- 从 [Releases 页面](https://github.com/mahmoudimus/ida-sigmaker/releases) 下载最新的 `sigmaker-*.zip` 发布包
+- 将 zip 内容解压到你的 IDA Pro `plugins/` 目录
 - *可选*，如果你想要 `SIMD` 加速，只需执行 `pip install sigmaker`
 - 重启 IDA Pro
 
-就这么简单！
+解压后你的 `plugins/` 目录结构如下：
+
+```
+plugins/
+├── sigmaker_loader.py   (IDA 启动时加载此文件)
+└── sigmaker/
+    ├── __init__.py       (签名制作核心逻辑)
+    ├── i18n.py           (多语言支持)
+    └── locale/           (翻译文件)
+```
+
+插件同时支持**中文和英文**界面，语言根据系统区域设置自动切换。
 
 ### 通过 hcli 安装
 
@@ -73,6 +87,8 @@ hcli plugin install SigMaker
 ```
 
 `hcli` 会下载插件并将其放置在 `$IDAUSR/plugins`（macOS/Linux 下为 `~/.idapro/plugins`）目录中，下次启动 IDA 时自动加载。需要 IDA 9.0+。如需 `SIMD` 加速，也请按上述方法执行 `pip install sigmaker`。
+
+插件使用引导加载器（`sigmaker_loader.py`）委托到 `sigmaker/` 子目录，该目录包含插件逻辑、国际化模块和翻译文件。这种设计使业务代码更清晰，更新也更方便 —— 只需替换 `sigmaker/` 子目录即可。
 
 ### 需要查找插件目录？
 

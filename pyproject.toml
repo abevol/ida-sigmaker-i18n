@@ -66,6 +66,8 @@ version = { attr = "sigmaker.__version__" }
     "*.md",
     "LICENSE*",
     "README*",
+    "*.mo",     # compiled translations
+    "*.po",     # translation sources
     "*.pyx",    # include the cython implementation sourcecode in the wheel, so that the user can cythonize later, this is necessary, it's not included by default even with extensions in setup.py
     "*.pxd",
     "*.c",

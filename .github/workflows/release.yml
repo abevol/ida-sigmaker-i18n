@@ -100,10 +100,24 @@ jobs:
               with:
                   python-version: "3.10"
             - &create-sigmaker-py
-              name: Create sigmaker.py from __init__.py
+              id: package
+              name: Prepare plugin zip
               if: ${{ steps.version.outputs.should_release == 'true' && steps.guard.outputs.already == 'false' }}
               run: |
-                  cp src/sigmaker/__init__.py sigmaker.py
+                  VERSION="${{ steps.version.outputs.version }}"
+                  ZIPNAME="sigmaker-${VERSION}.zip"
+                  # Build the sigmaker/ package directory
+                  python tools/po2mo.py src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.po src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.mo
+                  mkdir -p build/sigmaker/locale
+                  cp src/sigmaker/__init__.py build/sigmaker/
+                  cp src/sigmaker/i18n.py build/sigmaker/
+                  cp -r src/sigmaker/locale/zh_CN build/sigmaker/locale/
+                  cp src/sigmaker_loader.py build/
+                  # Zip with the correct structure: loader at root, sigmaker/ as subdir
+                  cd build
+                  zip -r "../${ZIPNAME}" sigmaker_loader.py sigmaker/
+                  cd ..
+                  echo "zip_path=${ZIPNAME}" >> $GITHUB_OUTPUT
             - &read-changelog
               name: 📖 Read CHANGELOG section for this version
               id: changelog
@@ -123,7 +137,7 @@ jobs:
                   VERSION="${{ steps.version.outputs.version }}"
                   CHANGES_FILE="${{ steps.changelog.outputs.changes_file }}"
                   {
-                    echo "# sigmaker.py - IDA Python Standalone Python Release"
+                    echo "# Sigmaker for IDA Pro - Standalone Plugin Release"
                     echo ""
                     echo "## Release Information"
                     echo "- **Version**: ${VERSION}"
@@ -139,12 +153,23 @@ jobs:
                     fi
                     echo ""
                     echo "## Description"
-                    echo "This is a standalone release of the IDA Pro signature maker plugin. The file \`sigmaker.py\` contains the complete plugin code that can be directly imported into IDA Pro."
+                    echo "This is a standalone release of the IDA Pro signature maker plugin packaged as a zip for easy installation."
                     echo ""
                     echo "## Installation"
-                    echo "1. Copy \`sigmaker.py\` to your IDA Pro plugins directory"
-                    echo "2. Restart IDA Pro"
-                    echo "3. Use Ctrl+Alt+S to access the Signature Maker menu"
+                    echo "1. Download \`sigmaker-${VERSION}.zip\`"
+                    echo "2. Extract the zip contents into your IDA Pro \`plugins/\` directory"
+                    echo "3. Restart IDA Pro"
+                    echo "4. Use Ctrl+Alt+S to access the Signature Maker menu"
+                    echo ""
+                    echo "### File structure after extraction:"
+                    echo "\`\`\`"
+                    echo "plugins/"
+                    echo "├── sigmaker_loader.py    (IDA loads this)"
+                    echo "└── sigmaker/"
+                    echo "    ├── __init__.py        (signature maker logic)"
+                    echo "    ├── i18n.py            (i18n support)"
+                    echo "    └── locale/            (translations)"
+                    echo "\`\`\`"
                     echo ""
                     echo "## License"
                     echo "See the main repository for license information."
@@ -158,7 +183,7 @@ jobs:
               uses: softprops/action-gh-release@v2
               with:
                   files: |
-                      sigmaker.py
+                      sigmaker-${{ steps.version.outputs.version }}.zip
                   tag_name: ${{ steps.version.outputs.tag }} # e.g. v1.3.0
                   name: ${{ steps.version.outputs.tag }}
                   body_path: release_body.md
