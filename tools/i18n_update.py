@@ -45,7 +45,7 @@ def write_pot(keys: list[str], en: dict[str, str]) -> str:
             '\n'
         )
         for k in keys:
-            f.write(f'# {_escape(en[k])}\n')
+            f.write(f'# {_escape(en[k]).replace(chr(10), " ")}\n')
             f.write(f'msgid "{k}"\n')
             f.write(f'msgstr ""\n\n')
     return pot_path
