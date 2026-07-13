@@ -20,11 +20,15 @@ def test_i18n_imports():
     assert callable(i18n._)
 
 
-def test_gettext_identity_for_missing_translation():
-    """When no .mo exists, _() returns the msgid unchanged."""
+def test_translation_loaded():
+    """With .mo present, _() returns the translated string for the detected locale."""
     from sigmaker import i18n
-    assert i18n._("OK") == "OK"
-    assert i18n._("Cancel") == "Cancel"
+    lang = i18n.get_language()
+    if lang == "zh_CN":
+        assert i18n._("OK") == "确定"
+        assert i18n._("Cancel") == "取消"
+    else:
+        assert i18n._("OK") == "OK"
 
 
 def test_get_language_returns_string():

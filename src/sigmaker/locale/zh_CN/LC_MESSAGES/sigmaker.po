@@ -1,0 +1,206 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: sigmaker 1.11.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-13 00:00+0800\n"
+"PO-Revision-Date: 2026-07-13 00:00+0800\n"
+"Last-Translator: \n"
+"Language-Team: zh_CN\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+msgid "OK"
+msgstr "确定"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "BUTTON YES* OK\nBUTTON CANCEL Cancel\nOptions\n\n<#Print top X shortest signatures when generating xref signatures#Print top X XREF signatures     :{opt1}>\n<#Stop after reaching X bytes when generating a single signature#Maximum single signature length :{opt2}>\n<#Stop after reaching X bytes when generating xref signatures#Maximum xref signature length   :{opt3}>\n<#Seconds before the first 'Continue?' prompt fires. -1 disables the prompt entirely (default).#Prompt interval (seconds, -1 disables):{opt4}>\n"
+msgstr "BUTTON YES* OK\nBUTTON CANCEL Cancel\n选项\n\n<#生成 xref 签名时打印最短的前 X 个签名#打印前 X 个 XREF 签名     :{opt1}>\n<#为单个签名生成达到 X 字节时停止#最大单个签名长度 :{opt2}>\n<#生成 xref 签名达到 X 字节时停止#最大 xref 签名长度   :{opt3}>\n<#第一个“继续？”提示触发前的秒数。-1 完全禁用提示（默认）。#提示间隔（秒，-1 禁用）：{opt4}>\n"
+
+msgid "BUTTON YES* OK\nBUTTON CANCEL Cancel\nWildcardable Operands\n{FormChangeCb}\nSelect operand types that should be wildcarded:\n\n<General Register (al, ax, es, ds...):{opt1}>\n<Direct Memory Reference (DATA) :{opt2}>\n<Memory Ref [Base Reg + Index Reg] :{opt3}>\n<Memory Ref [Base Reg + Index Reg + Displacement] :{opt4}>\n<Immediate Value :{opt5}>\n<Immediate Far Address (CODE) :{opt6}>\n<Immediate Near Address (CODE) :{opt7}>"
+msgstr "BUTTON YES* OK\nBUTTON CANCEL Cancel\n可通配操作数\n{FormChangeCb}\n选择应通配的操作数类型：\n\n<通用寄存器（al, ax, es, ds...）：{opt1}>\n<直接内存引用（DATA） :{opt2}>\n<内存引用 [基址寄存器 + 索引寄存器] :{opt3}>\n<内存引用 [基址寄存器 + 索引寄存器 + 偏移量] :{opt4}>\n<立即值 :{opt5}>\n<立即远地址（CODE） :{opt6}>\n<立即近地址（CODE） :{opt7}>"
+
+msgid "\n<Trace Register :{opt8}>\n<Debug Register :{opt9}>\n<Control Register :{opt10}>\n<Floating Point Register :{opt11}>\n<MMX Register :{opt12}>\n<XMM Register :{opt13}>\n<YMM Register :{opt14}>\n<ZMM Register :{opt15}>\n<Opmask Register :{opt16}>{cWildcardableOperands}>"
+msgstr "\n<跟踪寄存器 :{opt8}>\n<调试寄存器 :{opt9}>\n<控制寄存器 :{opt10}>\n<浮点寄存器 :{opt11}>\n<MMX 寄存器 :{opt12}>\n<XMM 寄存器 :{opt13}>\n<YMM 寄存器 :{opt14}>\n<ZMM 寄存器 :{opt15}>\n<操作码掩码寄存器 :{opt16}>{cWildcardableOperands}>"
+
+msgid "\n<(Unused) :{opt8}>\n<Register list (for LDM/STM) :{opt9}>\n<Coprocessor register list (for CDP) :{opt10}>\n<Coprocessor register (for LDC/STC) :{opt11}>\n<Floating point register list :{opt12}>\n<Arbitrary text stored in the operand :{opt13}>\n<ARM condition as an operand :{opt14}>{cWildcardableOperands}>"
+msgstr "\n<（未使用） :{opt8}>\n<寄存器列表（用于 LDM/STM） :{opt9}>\n<协处理器寄存器列表（用于 CDP） :{opt10}>\n<协处理器寄存器（用于 LDC/STC） :{opt11}>\n<浮点寄存器列表 :{opt12}>\n<存储在操作数中的任意文本 :{opt13}>\n<ARM 条件作为操作数 :{opt14}>{cWildcardableOperands}>"
+
+msgid "\n<Special purpose register :{opt8}>\n<Two FPRs :{opt9}>\n<SH & MB & ME :{opt10}>\n<crfield :{opt11}>\n<crbit :{opt12}>\n<Device control register :{opt13}>{cWildcardableOperands}>"
+msgstr "\n<特殊目的寄存器 :{opt8}>\n<双 FPR :{opt9}>\n<SH & MB & ME :{opt10}>\n<crfield :{opt11}>\n<crbit :{opt12}>\n<设备控制寄存器 :{opt13}>{cWildcardableOperands}>"
+
+msgid "{cWildcardableOperands}>\n"
+msgstr "{cWildcardableOperands}>\n"
+
+msgid "STARTITEM 0\nBUTTON YES* OK\nBUTTON CANCEL Cancel\n%(title)s\n{FormChangeCb}\nSelect action:\n<#Create a unique code signature for the current address#Create unique signature for current code address:{rCreateUniqueSig}>\n<#Find the shortest XREF signature for the current data or code address#Find shortest XREF signature for current data or code address:{rFindXRefSig}>\n<#Copy selected code bytes in the specified output format#Copy selected code:{rCopyCode}>\n<#Search the database for a signature pattern#Search for a signature:{rSearchSignature}>\n<#Find the shortest unique signature anywhere inside the current function#Find shortest unique signature for current function:{rFindFunctionSig}>{rAction}>\n\nOutput format:\n<#IDA style: E8 ? ? ? ? 45 33 F6#IDA Signature:{rIDASig}>\n<#x64Dbg style: E8 ?? ?? ?? ?? 45 33 F6#x64Dbg Signature:{rx64DbgSig}>\n<#C byte array + mask string#C Byte Array String Signature + String mask:{rByteArrayMaskSig}>\n<#C byte array + bitmask#C Bytes Signature + Bitmask:{rRawBytesBitmaskSig}>{rOutputFormat}>\n\nQuick Options:\n<#Wildcard operands to improve signature stability#Wildcards for operands:{cWildcardOperands}>\n<#Don't stop at function boundary#Continue when leaving function scope:{cContinueOutside}>\n<#Wildcard combined instructions#Wildcard optimized / combined instructions:{cWildcardOptimized}>\n<#Show periodic 'Continue?' prompts#Enable continue prompt (opt-in):{cEnablePrompt}>\n<#Output partial signature on cancel#Output partial signature on cancel (opt-in):{cOutputPartialOnCancel}>\n<#Scope uniqueness/search to containing segment#Limit uniqueness and search to the containing segment (opt-in):{cScopeToSegment}>{cGroupOptions}>\n\n<Operand types...:{bOperandTypes}><Other options...:{bOtherOptions}>\n"
+msgstr "STARTITEM 0\nBUTTON YES* OK\nBUTTON CANCEL Cancel\n%(title)s\n{FormChangeCb}\n选择操作：\n<#为当前地址创建唯一代码签名#为当前代码地址创建唯一签名：{rCreateUniqueSig}>\n<#为当前数据或代码地址查找最短 XREF 签名#为当前数据或代码地址查找最短 XREF 签名：{rFindXRefSig}>\n<#以指定输出格式复制所选代码字节#复制所选代码：{rCopyCode}>\n<#在数据库中搜索签名模式#搜索签名：{rSearchSignature}>\n<#在当前函数内查找最短唯一签名#查找当前函数的最短唯一签名：{rFindFunctionSig}>{rAction}>\n\n输出格式：\n<#IDA 风格：E8 ? ? ? ? 45 33 F6#IDA 签名：{rIDASig}>\n<#x64Dbg 风格：E8 ?? ?? ?? ?? 45 33 F6#x64Dbg 签名：{rx64DbgSig}>\n<#C 字节数组 + 掩码字符串#C 字节数组字符串签名 + 字符串掩码：{rByteArrayMaskSig}>\n<#C 字节数组 + 位掩码#C 字节签名 + 位掩码：{rRawBytesBitmaskSig}>{rOutputFormat}>\n\n快速选项：\n<#对操作数使用通配符以提高签名稳定性#操作数通配符：{cWildcardOperands}>\n<#不在函数边界处停止#离开函数作用域时继续：{cContinueOutside}>\n<#对优化/合并指令使用通配符#对优化/合并指令使用通配符：{cWildcardOptimized}>\n<#显示定期“继续？”提示#启用继续提示（可选）：{cEnablePrompt}>\n<#取消时输出部分签名#取消时输出部分签名（可选）：{cOutputPartialOnCancel}>\n<#将唯一性/搜索限定到包含段#将唯一性和搜索限定到包含段（可选）：{cScopeToSegment}>{cGroupOptions}>\n\n<操作数类型...：{bOperandTypes}><其他选项...：{bOtherOptions}>\n"
+
+msgid "Executing..."
+msgstr "执行中..."
+
+msgid "Processing (%(idx)d/%(total)d) | Elapsed: %(elapsed)ds"
+msgstr "处理中 (%(idx)d/%(total)d) | 已用: %(elapsed)ds"
+
+msgid "Create unique signature (from cursor address)\n\nGrowing a pattern from the current address until it matches exactly one place in the binary.\n\nPress Cancel to stop"
+msgstr "创建唯一签名（从光标地址开始）\n\n从当前地址增长模式，直到它匹配\n二进制中唯一的位置。\n\n按取消停止"
+
+msgid "Create unique signature (from cursor address)\nGrowing a pattern from the current address until it matches\nexactly one place in the binary.\n\nLength:  %(length)s bytes\nMatches: %(matches)s\nElapsed: %(elapsed)s\n\nPress Cancel to stop"
+msgstr "创建唯一签名（从光标地址开始）\n从当前地址增长模式，直到它匹配\n二进制中唯一的位置。\n\n长度：%(length)s 字节\n匹配数：%(matches)s\n已用：%(elapsed)s\n\n按取消停止"
+
+msgid "Find shortest function signature\n\nTrying every instruction in the function as a start point; growing each until unique and keeping the shortest.\n\nPress Cancel to stop"
+msgstr "查找最短函数签名\n\n尝试函数中的每条指令作为起点；逐条增长\n直到唯一并保留最短的。\n\n按取消停止"
+
+msgid "Find shortest function signature\nTrying every instruction as a start point; keeping the shortest unique one.\n\nFunction:     %(fn_bounds)s  (%(fn_size)d bytes)\nAnchor (#%(idx)d): %(anchor)s\nInner search: %(inner_bounds)s  (%(inner_length)d bytes, %(inner_matches_str)s)\nBest found:   %(best)s\nCandidates:   %(candidates_count)d unique so far\nElapsed:      %(elapsed)d\n\nPress Cancel to stop"
+msgstr "查找最短函数签名\n尝试每条指令作为起点；保留最短的唯一签名。\n\n函数：     %(fn_bounds)s  （%(fn_size)d 字节）\n锚点（#%(idx)d）：%(anchor)s\n内部搜索：%(inner_bounds)s  （%(inner_length)d 字节，%(inner_matches_str)s）\n最佳结果：  %(best)s\n候选：      %(candidates_count)d 个唯一\n已用：      %(elapsed)d\n\n按取消停止"
+
+msgid "Search for a signature\n\nScanning %(scope)s for your pattern.\n\nPress Cancel to stop"
+msgstr "搜索签名\n\n正在扫描 %(scope)s 中的模式。\n\n按取消停止"
+
+msgid "Copy selected code\n\nBuilding a signature for the selected address range.\n\nPress Cancel to stop"
+msgstr "复制所选代码\n\n正在为所选地址范围构建签名。\n\n按取消停止"
+
+msgid "Please stand by, copying segments..."
+msgstr "请稍候，正在复制段..."
+
+msgid "Please stand by, copying the segment..."
+msgstr "请稍候，正在复制段..."
+
+msgid "Find shortest XREF signature\n\nProcessing xref %(i)d of %(total)d (%(pct).1f%%...\n\nSuitable Signatures: %(found)d\nShortest Signature: %(shortest)d Bytes"
+msgstr "查找最短 XREF 签名\n\n正在处理 xref %(i)d / %(total)d (%(pct).1f%%...\n\n合适签名：%(found)d\n最短签名：%(shortest)d 字节"
+
+msgid "Error: Empty signature\n"
+msgstr "错误：空签名\n"
+
+msgid "%(count)d matches"
+msgstr "%(count)d 个匹配"
+
+msgid "match count unavailable"
+msgstr "匹配数不可用"
+
+msgid "Partial signature (NOT unique, %(count_str)s) for %(address)s%(func)s"
+msgstr "部分签名（不唯一，%(count_str)s）地址 %(address)s%(func)s"
+
+msgid "Partial signature (NOT unique, %(count_str)s)"
+msgstr "部分签名（不唯一，%(count_str)s）"
+
+msgid "%(prefix)s: %(fmted)s\n"
+msgstr "%(prefix)s：%(fmted)s\n"
+
+msgid "Signature for %(address)s%(func)s: %(fmted)s\n"
+msgstr "地址 %(address)s%(func)s 的签名：%(fmted)s\n"
+
+msgid "Signature: %(fmted)s\n"
+msgstr "签名：%(fmted)s\n"
+
+msgid "Failed to copy to clipboard!"
+msgstr "复制到剪贴板失败！"
+
+msgid "No XREFs have been found for your address\n"
+msgstr "未找到该地址的 XREF\n"
+
+msgid "Top %(top)d Signatures out of %(total)d xrefs:\n"
+msgstr "前 %(top)d 个签名（共 %(total)d 个 xref）：\n"
+
+msgid "XREF Signature #%(num)d @ %(addr)s%(func)s: %(sig)s\n"
+msgstr "XREF 签名 #%(num)d @ %(addr)s%(func)s：%(sig)s\n"
+
+msgid "Signature: %(sig)s\n"
+msgstr "签名：%(sig)s\n"
+
+msgid "Signature does not match!\n"
+msgstr "签名不匹配！\n"
+
+msgid "Match @ %(addr)s in %(func)s\n"
+msgstr "匹配 @ %(addr)s 于 %(func)s\n"
+
+msgid "Match @ %(addr)s\n"
+msgstr "匹配 @ %(addr)s\n"
+
+msgid "Falling back to xref signatures...\n\nPress Cancel to stop"
+msgstr "回退到 xref 签名...\n\n按取消停止"
+
+msgid "Select a range to copy the code!\n"
+msgstr "请选择要复制代码的范围！\n"
+
+msgid "Enter a signature"
+msgstr "输入签名"
+
+msgid "No signature entered!\n"
+msgstr "未输入签名！\n"
+
+msgid "Invalid action!\n"
+msgstr "无效操作！\n"
+
+msgid "Enter end address for selection:"
+msgstr "输入选择范围的结束地址："
+
+msgid "Place cursor inside a function first.\n"
+msgstr "请先将光标放在函数内。\n"
+
+msgid "%(func)s has been running for %(time)s."
+msgstr "%(func)s 已运行 %(time)s。"
+
+msgid "Continue?"
+msgstr "继续？"
+
+msgid "Continue execution?"
+msgstr "继续执行？"
+
+msgid "Signature is already %(len)d bytes. Continue?"
+msgstr "签名已达到 %(len)d 字节。继续？"
+
+msgid "SigMaker"
+msgstr "SigMaker"
+
+msgid "Start Profiling"
+msgstr "开始性能分析"
+
+msgid "Stop Profiling"
+msgstr "停止性能分析"
+
+msgid "Show the signature maker dialog."
+msgstr "显示签名制作器对话框。"
+
+msgid "Start a cProfile session capturing subsequent SigMaker activity."
+msgstr "启动 cProfile 会话，捕获后续 SigMaker 活动。"
+
+msgid "Stop the active cProfile session and write the dump to the user IDA dir."
+msgstr "停止活动的 cProfile 会话，将转储写入用户 IDA 目录。"
+
+msgid "%(name)s v%(version)s for IDA Pro by %(author)s"
+msgstr "%(name)s v%(version)s 适用于 IDA Pro，作者 %(author)s"
+
+msgid "Select location in disassembly and press CTRL+ALT+S to open menu"
+msgstr "在反汇编中选择位置，按 CTRL+ALT+S 打开菜单"
+
+msgid "Function signature (offset +%(offset)s into function %(func_start)s%(func_name)s):\n"
+msgstr "函数签名（偏移 +%(offset)s 进入函数 %(func_start)s%(func_name)s）：\n"
+
+msgid "No unique signature inside function %(func_start)s; trying xref signatures...\n"
+msgstr "函数 %(func_start)s 内无唯一签名；正在尝试 xref 签名...\n"
+
+msgid "Xref signature into %(func_start)s (from %(addr)s):\n"
+msgstr "指向 %(func_start)s 的 Xref 签名（来自 %(addr)s）：\n"
+
+msgid "No unique signature found for function %(func_start)s (no unique sig within body and no usable xrefs)\n"
+msgstr "未找到函数 %(func_start)s 的唯一签名（函数体内无唯一签名且无可用 xref）\n"
+
+msgid "Error: End address %(end)s must be greater than start address %(start)s."
+msgstr "错误：结束地址 %(end)s 必须大于开始地址 %(start)s。"
+
+msgid "No end address selected, using line end: %(end)s"
+msgstr "未选择结束地址，使用行尾：%(end)s"
+
+msgid "Error setting clipboard text: %(error)s"
+msgstr "设置剪贴板文本出错：%(error)s"
+
+msgid "Unrecognized signature type\n"
+msgstr "无法识别的签名类型\n"
+
+msgid "Detected mask \"%(mask)s\" but failed to match corresponding bytes\n"
+msgstr "检测到掩码 \"%(mask)s\"，但未能匹配对应的字节\n"
+
