@@ -2617,7 +2617,7 @@ class SignatureSearcher:
         skip_more_than_one: bool = False,
         buf: typing.Optional["InMemoryBuffer"] = None,
     ) -> list[Match]:
-        simd_signature, _ = SigText.normalize(ida_signature)
+        simd_signature, _sig_pat = SigText.normalize(ida_signature)
         if buf is None:
             with ProgressDialog(_("progress.copy_segments")):
                 buf = InMemoryBuffer.load(mode=InMemoryBuffer.LoadMode.SEGMENTS)
@@ -2676,7 +2676,7 @@ class SignatureSearcher:
         refinement; reusing the returned buf keeps subsequent refinement on
         the same bytes. SIMD path only.
         """
-        simd_signature, _ = SigText.normalize(ida_signature)
+        simd_signature, _sig_pat = SigText.normalize(ida_signature)
         if buf is None:
             with ProgressDialog(_("progress.copy_segments")):
                 buf = InMemoryBuffer.load(mode=InMemoryBuffer.LoadMode.SEGMENTS)
