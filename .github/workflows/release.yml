@@ -147,15 +147,15 @@ jobs:
                     echo ""
                     echo "## Release Information"
                     echo "- **Version**: ${VERSION}"
-                    echo "- **Source**: https://github.com/mahmoudimus/ida-sigmaker"
-                    echo "- **Author**: @mahmoudimus (Mahmoud Abdelkader)"
+                    echo "- **Source**: https://github.com/${{ github.repository }}"
+                    echo "- **Author**: @${{ github.actor }}"
                     echo ""
                     echo "## What changed"
                     echo ""
                     if [ -n "$CHANGES_FILE" ] && [ -f "$CHANGES_FILE" ]; then
                       cat "$CHANGES_FILE"
                     else
-                      echo "See [CHANGELOG.md](https://github.com/mahmoudimus/ida-sigmaker/blob/main/CHANGELOG.md) for details."
+                      echo "See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details."
                     fi
                     echo ""
                     echo "## Description"
