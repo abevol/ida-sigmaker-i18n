@@ -24,6 +24,7 @@ import typing
 
 import idaapi
 import idc
+from sigmaker.i18n import _
 
 __author__ = "mahmoudimus"
 __version__ = "1.11.0"
@@ -3134,22 +3135,61 @@ class Clipboard:
 class ConfigureOperandWildcardBitmaskForm(idaapi.Form):
     """Interactive form to configure wildcardable operands using checkboxes."""
 
+    _BASE_TEMPLATE = _(
+        "BUTTON YES* OK\n"
+        "BUTTON CANCEL Cancel\n"
+        "Wildcardable Operands\n"
+        "{FormChangeCb}\n"
+        "Select operand types that should be wildcarded:\n"
+        "\n"
+        "<General Register (al, ax, es, ds...):{opt1}>\n"
+        "<Direct Memory Reference (DATA) :{opt2}>\n"
+        "<Memory Ref [Base Reg + Index Reg] :{opt3}>\n"
+        "<Memory Ref [Base Reg + Index Reg + Displacement] :{opt4}>\n"
+        "<Immediate Value :{opt5}>\n"
+        "<Immediate Far Address (CODE) :{opt6}>\n"
+        "<Immediate Near Address (CODE) :{opt7}>"
+    )
+
+    _X86_TEMPLATE = _(
+        "\n"
+        "<Trace Register :{opt8}>\n"
+        "<Debug Register :{opt9}>\n"
+        "<Control Register :{opt10}>\n"
+        "<Floating Point Register :{opt11}>\n"
+        "<MMX Register :{opt12}>\n"
+        "<XMM Register :{opt13}>\n"
+        "<YMM Register :{opt14}>\n"
+        "<ZMM Register :{opt15}>\n"
+        "<Opmask Register :{opt16}>{cWildcardableOperands}>"
+    )
+
+    _ARM_TEMPLATE = _(
+        "\n"
+        "<(Unused) :{opt8}>\n"
+        "<Register list (for LDM/STM) :{opt9}>\n"
+        "<Coprocessor register list (for CDP) :{opt10}>\n"
+        "<Coprocessor register (for LDC/STC) :{opt11}>\n"
+        "<Floating point register list :{opt12}>\n"
+        "<Arbitrary text stored in the operand :{opt13}>\n"
+        "<ARM condition as an operand :{opt14}>{cWildcardableOperands}>"
+    )
+
+    _PPC_TEMPLATE = _(
+        "\n"
+        "<Special purpose register :{opt8}>\n"
+        "<Two FPRs :{opt9}>\n"
+        "<SH & MB & ME :{opt10}>\n"
+        "<crfield :{opt11}>\n"
+        "<crbit :{opt12}>\n"
+        "<Device control register :{opt13}>{cWildcardableOperands}>"
+    )
+
+    _FALLBACK_TEMPLATE = _("{cWildcardableOperands}>\n")
+
     def __init__(self) -> None:
         F = idaapi.Form
-        # Define the form layout
-        form_text = """BUTTON YES* OK
-BUTTON CANCEL Cancel
-Wildcardable Operands
-{FormChangeCb}
-Select operand types that should be wildcarded:
-
-<General Register (al, ax, es, ds...):{opt1}>
-<Direct Memory Reference (DATA) :{opt2}>
-<Memory Ref [Base Reg + Index Reg] :{opt3}>
-<Memory Ref [Base Reg + Index Reg + Displacement] :{opt4}>
-<Immediate Value :{opt5}>
-<Immediate Far Address (CODE) :{opt6}>
-<Immediate Near Address (CODE) :{opt7}>"""
+        form_text = self._BASE_TEMPLATE
         registers: typing.List[str] = [
             "opt1",
             "opt2",
@@ -3160,19 +3200,9 @@ Select operand types that should be wildcarded:
             "opt7",
         ]
 
-        # Processor-specific operand types
         proc_arch = idaapi.ph_get_id()
         if proc_arch == idaapi.PLFM_386:
-            form_text += """
-<Trace Register :{opt8}>
-<Debug Register :{opt9}>
-<Control Register :{opt10}>
-<Floating Point Register :{opt11}>
-<MMX Register :{opt12}>
-<XMM Register :{opt13}>
-<YMM Register :{opt14}>
-<ZMM Register :{opt15}>
-<Opmask Register :{opt16}>{cWildcardableOperands}>"""
+            form_text += self._X86_TEMPLATE
             registers.extend(
                 [
                     "opt8",
@@ -3187,30 +3217,16 @@ Select operand types that should be wildcarded:
                 ]
             )
         elif proc_arch == idaapi.PLFM_ARM:
-            form_text += """
-<(Unused) :{opt8}>
-<Register list (for LDM/STM) :{opt9}>
-<Coprocessor register list (for CDP) :{opt10}>
-<Coprocessor register (for LDC/STC) :{opt11}>
-<Floating point register list :{opt12}>
-<Arbitrary text stored in the operand :{opt13}>
-<ARM condition as an operand :{opt14}>{cWildcardableOperands}>"""
+            form_text += self._ARM_TEMPLATE
             registers.extend(
                 ["opt8", "opt9", "opt10", "opt11", "opt12", "opt13", "opt14"]
             )
         elif proc_arch == idaapi.PLFM_PPC:
-            form_text += """
-<Special purpose register :{opt8}>
-<Two FPRs :{opt9}>
-<SH & MB & ME :{opt10}>
-<crfield :{opt11}>
-<crbit :{opt12}>
-<Device control register :{opt13}>{cWildcardableOperands}>"""
+            form_text += self._PPC_TEMPLATE
             registers.extend(["opt8", "opt9", "opt10", "opt11", "opt12", "opt13"])
         else:
-            form_text += """{cWildcardableOperands}>
-"""
-        # Skip o_void visually (>>1) by shifting the bitmask
+            form_text += self._FALLBACK_TEMPLATE
+
         options = WildcardPolicy.current().to_mask() >> 1
 
         controls = {
@@ -3225,7 +3241,6 @@ Select operand types that should be wildcarded:
     def OnFormChange(self, fid: int) -> int:
         """Callback invoked when the form state changes."""
         if fid == self.cWildcardableOperands.id:  # type: ignore
-            # re-shift b/c we skipped o_void
             mask = self.GetControlValue(self.cWildcardableOperands) << 1  # type: ignore
             WildcardPolicy.set_current(WildcardPolicy.from_mask(mask))
         return 1
@@ -3234,27 +3249,26 @@ Select operand types that should be wildcarded:
 class ConfigureOptionsForm(idaapi.Form):
     """Interactive form to configure XREF and signature generation options."""
 
+    _TEMPLATE = _(
+        "BUTTON YES* OK\n"
+        "BUTTON CANCEL Cancel\n"
+        "Options\n"
+        "\n"
+        "<#Print top X shortest signatures when generating xref signatures#Print top X XREF signatures     :{opt1}>\n"
+        "<#Stop after reaching X bytes when generating a single signature#Maximum single signature length :{opt2}>\n"
+        "<#Stop after reaching X bytes when generating xref signatures#Maximum xref signature length   :{opt3}>\n"
+        "<#Seconds before the first 'Continue?' prompt fires. -1 disables the prompt entirely (default).#Prompt interval (seconds, -1 disables):{opt4}>\n"
+    )
+
     def __init__(self) -> None:
         F = idaapi.Form
-
-        # Define the form layout
-        form_text = """BUTTON YES* OK
-BUTTON CANCEL Cancel
-Options
-
-<#Print top X shortest signatures when generating xref signatures#Print top X XREF signatures     :{opt1}>
-<#Stop after reaching X bytes when generating a single signature#Maximum single signature length :{opt2}>
-<#Stop after reaching X bytes when generating xref signatures#Maximum xref signature length   :{opt3}>
-<#Seconds before the first 'Continue?' prompt fires. -1 disables the prompt entirely (default).#Prompt interval (seconds, -1 disables):{opt4}>
-"""
-
         self.controls = {
             "opt1": F.NumericInput(tp=F.FT_DEC),
             "opt2": F.NumericInput(tp=F.FT_DEC),
             "opt3": F.NumericInput(tp=F.FT_DEC),
             "opt4": F.NumericInput(tp=F.FT_DEC),
         }
-        super().__init__(form_text, self.controls)
+        super().__init__(self._TEMPLATE, self.controls)
 
     def ExecuteForm(self) -> int:
         """Execute the form and apply changes to global variables."""
@@ -3281,39 +3295,45 @@ Options
 class SignatureMakerForm(idaapi.Form):
     """Main form presented when the user invokes the SigMaker plugin."""
 
+    _TEMPLATE = _(
+        "STARTITEM 0\n"
+        "BUTTON YES* OK\n"
+        "BUTTON CANCEL Cancel\n"
+        "%(title)s\n"
+        "{FormChangeCb}\n"
+        "Select action:\n"
+        "<#Select an address, and create a code signature for it#Create unique signature for current code address:{rCreateUniqueSig}>\n"
+        "<#Select an address or variable, and create code signatures for its references. Will output the shortest 5 signatures#Find shortest XREF signature for current data or code address:{rFindXRefSig}>\n"
+        "<#Select 1+ instructions, and copy the bytes using the specified output format#Copy selected code:{rCopyCode}>\n"
+        "<#Paste any string containing your signature/mask and find matches#Search for a signature:{rSearchSignature}>\n"
+        "<#Find the shortest unique signature anywhere inside the current function, with automatic xref fallback if the function body is not unique#Find shortest unique signature for current function:{rFindFunctionSig}>{rAction}>\n"
+        "\n"
+        "Output format:\n"
+        "<#Example - E8 ? ? ? ? 45 33 F6 66 44 89 34 33#IDA Signature:{rIDASig}>\n"
+        "<#Example - E8 ?? ?? ?? ?? 45 33 F6 66 44 89 34 33#x64Dbg Signature:{rx64DbgSig}>\n"
+        "<#Example - "
+        "\\\\" "\\xE8" "\\\\" "\\x00" "\\\\" "\\x00" "\\\\" "\\x00" "\\\\" "\\x00"
+        "\\\\" "\\x45" "\\\\" "\\x33" "\\\\" "\\xF6" "\\\\" "\\x66" "\\\\" "\\x44"
+        "\\\\" "\\x89" "\\\\" "\\x34" "\\\\" "\\x33"
+        " x????xxxxxxxx"
+        "#C Byte Array Signature String + String mask:{rByteArrayMaskSig}>\n"
+        "<#Example - 0xE8, 0x00, 0x00, 0x00, 0x00, 0x45, 0x33, 0xF6, 0x66, 0x44, 0x89, 0x34, 0x33 0b1111111100001#C Bytes Signature + Bitmask:{rRawBytesBitmaskSig}>{rOutputFormat}>\n"
+        "\n"
+        "Quick Options:\n"
+        "<#Enable wildcarding for operands, to improve stability of created signatures#Wildcards for operands:{cWildcardOperands}>\n"
+        "<#Don't stop signature generation when reaching end of function#Continue when leaving function scope:{cContinueOutside}>\n"
+        "<#Wildcard the whole instruction when the operand (usually a register) is encoded into the operator#Wildcard optimized / combined instructions:{cWildcardOptimized}>\n"
+        "<#Opt-in -- show periodic 'Continue?' prompts while generating. Default is a wait-box with a Cancel button.#Enable continue prompt (opt-in):{cEnablePrompt}>\n"
+        "<#Opt-in -- when you cancel a unique-signature search, output the partial signature (with match count) instead of nothing. Default off. (Issue #22)#Output partial signature on cancel (opt-in):{cOutputPartialOnCancel}>\n"
+        "<#Opt-in -- scope to the segment containing the anchor instead of the whole database, so functions duplicated across segments (e.g. a boot section and a main section) can be signed. Creation checks uniqueness within that segment; Search is scoped to the segment under your cursor. (Issue #64)#Limit uniqueness and search to the containing segment (opt-in):{cScopeToSegment}>{cGroupOptions}>\n"
+        "\n"
+        "<Operand types...:{bOperandTypes}><Other options...:{bOtherOptions}>\n"
+    )
+
     def __init__(self) -> None:
         F = idaapi.Form
-        form_text = (
-            f"""STARTITEM 0
-BUTTON YES* OK
-BUTTON CANCEL Cancel
-{PLUGIN_NAME} v{PLUGIN_VERSION} {"(SIMD ENABLED)" if SIMD_SPEEDUP_AVAILABLE else "(NO SIMD SPEEDUP)"}"""
-            + r"""
-{FormChangeCb}
-Select action:
-<#Select an address, and create a code signature for it#Create unique signature for current code address:{rCreateUniqueSig}>
-<#Select an address or variable, and create code signatures for its references. Will output the shortest 5 signatures#Find shortest XREF signature for current data or code address:{rFindXRefSig}>
-<#Select 1+ instructions, and copy the bytes using the specified output format#Copy selected code:{rCopyCode}>
-<#Paste any string containing your signature/mask and find matches#Search for a signature:{rSearchSignature}>
-<#Find the shortest unique signature anywhere inside the current function, with automatic xref fallback if the function body is not unique#Find shortest unique signature for current function:{rFindFunctionSig}>{rAction}>
-
-Output format:
-<#Example - E8 ? ? ? ? 45 33 F6 66 44 89 34 33#IDA Signature:{rIDASig}>
-<#Example - E8 ?? ?? ?? ?? 45 33 F6 66 44 89 34 33#x64Dbg Signature:{rx64DbgSig}>
-<#Example - \\\xE8\\\x00\\\x00\\\x00\\\x00\\\x45\\\x33\\\xF6\\\x66\\\x44\\\x89\\\x34\\\x33 x????xxxxxxxx#C Byte Array String Signature + String mask:{rByteArrayMaskSig}>
-<#Example - 0xE8, 0x00, 0x00, 0x00, 0x00, 0x45, 0x33, 0xF6, 0x66, 0x44, 0x89, 0x34, 0x33 0b1111111100001#C Bytes Signature + Bitmask:{rRawBytesBitmaskSig}>{rOutputFormat}>
-
-Quick Options:
-<#Enable wildcarding for operands, to improve stability of created signatures#Wildcards for operands:{cWildcardOperands}>
-<#Don't stop signature generation when reaching end of function#Continue when leaving function scope:{cContinueOutside}>
-<#Wildcard the whole instruction when the operand (usually a register) is encoded into the operator#Wildcard optimized / combined instructions:{cWildcardOptimized}>
-<#Opt-in -- show periodic 'Continue?' prompts while generating. Default is a wait-box with a Cancel button.#Enable continue prompt (opt-in):{cEnablePrompt}>
-<#Opt-in -- when you cancel a unique-signature search, output the partial signature (with match count) instead of nothing. Default off. (Issue #22)#Output partial signature on cancel (opt-in):{cOutputPartialOnCancel}>
-<#Opt-in -- scope to the segment containing the anchor instead of the whole database, so functions duplicated across segments (e.g. a boot section and a main section) can be signed. Creation checks uniqueness within that segment; Search is scoped to the segment under your cursor. (Issue #64)#Limit uniqueness and search to the containing segment (opt-in):{cScopeToSegment}>{cGroupOptions}>
-
-<Operand types...:{bOperandTypes}><Other options...:{bOtherOptions}>
-"""
-        )
+        simd_status = "(SIMD ENABLED)" if SIMD_SPEEDUP_AVAILABLE else "(NO SIMD SPEEDUP)"
+        form_text = self._TEMPLATE % {"title": f"{PLUGIN_NAME} v{PLUGIN_VERSION} {simd_status}"}
         controls = {
             "cVersion": F.StringLabel(PLUGIN_VERSION),
             "FormChangeCb": F.FormChangeCb(self.OnFormChange),

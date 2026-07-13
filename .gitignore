@@ -188,3 +188,4 @@ src/**/*.so
 src/**/*.dll
 src/**/*.html
 src/**/*.so.dSYM
+/.superpowers
