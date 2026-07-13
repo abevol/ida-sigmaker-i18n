@@ -101,20 +101,24 @@ jobs:
                   python-version: "3.10"
             - &create-sigmaker-py
               id: package
-              name: Prepare plugin zip
+              name: Prepare plugin zip from sdist
               if: ${{ steps.version.outputs.should_release == 'true' && steps.guard.outputs.already == 'false' }}
               run: |
                   VERSION="${{ steps.version.outputs.version }}"
                   ZIPNAME="sigmaker-${VERSION}.zip"
-                  # Build the sigmaker/ package directory
+                  # Compile translations so they're in the sdist
                   python tools/po2mo.py src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.po src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.mo
-                  mkdir -p build/sigmaker/locale
-                  cp src/sigmaker/__init__.py build/sigmaker/
-                  cp src/sigmaker/i18n.py build/sigmaker/
-                  cp -r src/sigmaker/locale/zh_CN build/sigmaker/locale/
+                  # Build the sdist -- this runs setuptools-scm (auto-version from git tag)
+                  # and includes everything listed in package-data
+                  pip install build setuptools-scm wheel
+                  python -m build --sdist
+                  # Extract the sdist into a staging directory
+                  mkdir -p build
+                  SDIST="dist/sigmaker-${VERSION}.tar.gz"
+                  tar xzf "$SDIST" -C build/
+                  # Structure: sigmaker-${VERSION}/src/sigmaker/ has the package
+                  mv "build/sigmaker-${VERSION}/src/sigmaker" build/sigmaker
                   cp src/sigmaker_loader.py build/
-                  # Write _version.py so standalone users see the correct version
-                  echo "__version__ = \"${VERSION}\"" > build/sigmaker/_version.py
                   # Zip with the correct structure: loader at root, sigmaker/ as subdir
                   cd build
                   zip -r "../${ZIPNAME}" sigmaker_loader.py sigmaker/
