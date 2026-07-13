@@ -118,11 +118,19 @@ if not SIMD_SPEEDUP_AVAILABLE:
     with contextlib.suppress(Exception):
         _load_speedups_sibling()
     if not SIMD_SPEEDUP_AVAILABLE:
-        logging.getLogger("sigmaker").info(
-            "SIMD speedup NOT available. Searched: %s",
-            list(pathlib.Path(p).resolve() / "sigmaker" / "_speedups"
-                 for p in sys.path
-                 if (pathlib.Path(p) / "sigmaker" / "_speedups").is_dir()))
+        import importlib.machinery
+        for p in sys.path:
+            d = pathlib.Path(p) / "sigmaker" / "_speedups"
+            if d.is_dir():
+                files = [str(f.name) for f in d.iterdir()]
+                print(f"[sigmaker] Found _speedups: {d}")
+                print(f"[sigmaker]   Files: {files}")
+                for suffix in importlib.machinery.EXTENSION_SUFFIXES:
+                    if (d / f"simd_scan{suffix}").exists():
+                        print(f"[sigmaker]   HAS simd_scan{suffix}")
+                    else:
+                        print(f"[sigmaker]   NO simd_scan{suffix}")
+        print("[sigmaker] SIMD speedup NOT enabled")
 
 
 # How many matches a scan loop processes between cancellation polls.
