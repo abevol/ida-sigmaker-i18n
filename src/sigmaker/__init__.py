@@ -83,18 +83,28 @@ def _load_speedups_sibling() -> bool:
             candidate = speedups_dir / f"simd_scan{suffix}"
             if not candidate.exists():
                 continue
-            spec = importlib.util.spec_from_file_location(
-                "sigmaker._speedups.simd_scan", candidate
-            )
-            if spec is None or spec.loader is None:
+            print(f"[sigmaker] Attempting to load: {candidate}")
+            try:
+                spec = importlib.util.spec_from_file_location(
+                    "sigmaker._speedups.simd_scan", candidate
+                )
+                if spec is None:
+                    print(f"[sigmaker]   spec_from_file_location returned None")
+                    continue
+                if spec.loader is None:
+                    print(f"[sigmaker]   spec.loader is None")
+                    continue
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                simd_scan = module
+                _SimdSignature = module.Signature
+                _simd_scan_bytes = module.scan_bytes
+                SIMD_SPEEDUP_AVAILABLE = True
+                print(f"[sigmaker]   SUCCESS: SIMD enabled")
+                return True
+            except Exception as ex:
+                print(f"[sigmaker]   FAILED: {type(ex).__name__}: {ex}")
                 continue
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            simd_scan = module
-            _SimdSignature = module.Signature
-            _simd_scan_bytes = module.scan_bytes
-            SIMD_SPEEDUP_AVAILABLE = True
-            return True
         return False
 
     plugin_speedups = pathlib.Path(__file__).resolve().parent / "_speedups"
