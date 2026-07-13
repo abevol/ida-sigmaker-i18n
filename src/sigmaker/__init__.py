@@ -63,15 +63,14 @@ with contextlib.suppress(ImportError):
 
 
 def _load_speedups_sibling() -> bool:
-    """Load the compiled _speedups extension from pip-installed or sibling dir.
+    """Load compiled SIMD extension from plugin dir or pip-installed sigmaker.
 
-    The package-level `from sigmaker._speedups import simd_scan` above
-    resolves to whatever `sigmaker` is first on sys.path. When the plugin
-    lives under IDA's ``plugins/`` directory (via the zip+loader layout)
-    while ``pip install sigmaker`` installs the compiled SIMD extension to
+    When the plugin lives under IDA's ``plugins/`` (zip+loader layout) while
+    ``pip install sigmaker`` installs the compiled extension to
     ``site-packages/sigmaker/_speedups/``, the plugin's own ``_speedups/``
-    shadows the real one and the compile extension is missed.  This helper
-    first checks the sibling dir, then falls back to the installed package.
+    (Cython sources only, no ``.pyd``/``.so``) shadows the real one and the
+    extension is missed.  This helper tries sibling dir first, then scans
+    every entry on ``sys.path`` for an installed ``sigmaker/_speedups/``.
     Returns True on success.
     """
     global simd_scan, _SimdSignature, _simd_scan_bytes, SIMD_SPEEDUP_AVAILABLE
@@ -97,20 +96,19 @@ def _load_speedups_sibling() -> bool:
             return True
         return False
 
-    # 1) Check the sibling directory (plugin's own _speedups/)
-    sibling = pathlib.Path(__file__).resolve().parent / "_speedups"
-    if sibling.is_dir() and _try_load(sibling):
+    plugin_speedups = pathlib.Path(__file__).resolve().parent / "_speedups"
+    if plugin_speedups.is_dir() and _try_load(plugin_speedups):
         return True
 
-    # 2) Fall back to pip-installed sigmaker._speedups
-    try:
-        installed_spec = importlib.util.find_spec("sigmaker._speedups")
-        if installed_spec is not None and installed_spec.submodule_search_locations:
-            for loc in installed_spec.submodule_search_locations:
-                if _try_load(pathlib.Path(loc)):
-                    return True
-    except (ImportError, ModuleNotFoundError):
-        pass
+    already = {str(plugin_speedups.resolve())}
+    for p in list(sys.path):
+        candidate = pathlib.Path(p) / "sigmaker" / "_speedups"
+        resolved = str(candidate.resolve())
+        if resolved in already or not candidate.is_dir():
+            continue
+        already.add(resolved)
+        if _try_load(candidate):
+            return True
 
     return False
 
@@ -118,6 +116,11 @@ def _load_speedups_sibling() -> bool:
 if not SIMD_SPEEDUP_AVAILABLE:
     with contextlib.suppress(Exception):
         _load_speedups_sibling()
+    if not SIMD_SPEEDUP_AVAILABLE:
+        LOGGER.info("SIMD speedup NOT available. Searched: %s",
+                     list(pathlib.Path(p).resolve() / "sigmaker" / "_speedups"
+                          for p in sys.path
+                          if (pathlib.Path(p) / "sigmaker" / "_speedups").is_dir()))
 
 
 # How many matches a scan loop processes between cancellation polls.
