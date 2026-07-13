@@ -113,6 +113,8 @@ jobs:
                   cp src/sigmaker/i18n.py build/sigmaker/
                   cp -r src/sigmaker/locale/zh_CN build/sigmaker/locale/
                   cp src/sigmaker_loader.py build/
+                  # Write _version.py so standalone users see the correct version
+                  echo "__version__ = \"${VERSION}\"" > build/sigmaker/_version.py
                   # Zip with the correct structure: loader at root, sigmaker/ as subdir
                   cd build
                   zip -r "../${ZIPNAME}" sigmaker_loader.py sigmaker/
