@@ -63,44 +63,55 @@ with contextlib.suppress(ImportError):
 
 
 def _load_speedups_sibling() -> bool:
-    """Load the compiled _speedups extension that sits next to this file.
+    """Load the compiled _speedups extension from pip-installed or sibling dir.
 
     The package-level `from sigmaker._speedups import simd_scan` above
-    resolves to whatever `sigmaker` is first on sys.path. In a dev or
-    symlink layout (e.g. IDA loading this file from a source tree while a
-    pip-installed `sigmaker` namespace package without a matching compiled
-    extension shadows it), that import yields nothing. When this file lives
-    in a real package directory with a sibling `_speedups/`, load the
-    extension by path instead. Returns True on success.
-
-    No-ops for the shipped single-file `sigmaker.py`, which has no sibling
-    `_speedups/` directory and relies on the pip-installed extension.
+    resolves to whatever `sigmaker` is first on sys.path. When the plugin
+    lives under IDA's ``plugins/`` directory (via the zip+loader layout)
+    while ``pip install sigmaker`` installs the compiled SIMD extension to
+    ``site-packages/sigmaker/_speedups/``, the plugin's own ``_speedups/``
+    shadows the real one and the compile extension is missed.  This helper
+    first checks the sibling dir, then falls back to the installed package.
+    Returns True on success.
     """
     global simd_scan, _SimdSignature, _simd_scan_bytes, SIMD_SPEEDUP_AVAILABLE
     import importlib.machinery
     import importlib.util
 
-    speedups_dir = pathlib.Path(__file__).resolve().parent / "_speedups"
-    if not speedups_dir.is_dir():
+    def _try_load(speedups_dir: pathlib.Path) -> bool:
+        for suffix in importlib.machinery.EXTENSION_SUFFIXES:
+            candidate = speedups_dir / f"simd_scan{suffix}"
+            if not candidate.exists():
+                continue
+            spec = importlib.util.spec_from_file_location(
+                "sigmaker._speedups.simd_scan", candidate
+            )
+            if spec is None or spec.loader is None:
+                continue
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            simd_scan = module
+            _SimdSignature = module.Signature
+            _simd_scan_bytes = module.scan_bytes
+            SIMD_SPEEDUP_AVAILABLE = True
+            return True
         return False
-    for suffix in importlib.machinery.EXTENSION_SUFFIXES:
-        candidate = speedups_dir / f"simd_scan{suffix}"
-        if not candidate.exists():
-            continue
-        # The spec name's final component must be "simd_scan" so the C
-        # extension loader finds its PyInit_simd_scan export.
-        spec = importlib.util.spec_from_file_location(
-            "sigmaker._speedups.simd_scan", candidate
-        )
-        if spec is None or spec.loader is None:
-            continue
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        simd_scan = module
-        _SimdSignature = module.Signature
-        _simd_scan_bytes = module.scan_bytes
-        SIMD_SPEEDUP_AVAILABLE = True
+
+    # 1) Check the sibling directory (plugin's own _speedups/)
+    sibling = pathlib.Path(__file__).resolve().parent / "_speedups"
+    if sibling.is_dir() and _try_load(sibling):
         return True
+
+    # 2) Fall back to pip-installed sigmaker._speedups
+    try:
+        installed_spec = importlib.util.find_spec("sigmaker._speedups")
+        if installed_spec is not None and installed_spec.submodule_search_locations:
+            for loc in installed_spec.submodule_search_locations:
+                if _try_load(pathlib.Path(loc)):
+                    return True
+    except (ImportError, ModuleNotFoundError):
+        pass
+
     return False
 
 
