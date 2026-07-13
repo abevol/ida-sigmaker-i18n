@@ -21,14 +21,15 @@ def test_i18n_imports():
 
 
 def test_translation_loaded():
-    """With .mo present, _() returns the translated string for the detected locale."""
+    """With .mo present, t() returns English fallback for untranslated keys."""
     from sigmaker import i18n
     lang = i18n.get_language()
-    if lang == "zh_CN":
-        assert i18n._("OK") == "确定"
-        assert i18n._("Cancel") == "取消"
-    else:
-        assert i18n._("OK") == "OK"
+    # All keys fall back to _EN (English) when .mo has empty msgstr
+    assert i18n.t("ok") == "OK"
+    assert i18n.t("cancel") == "Cancel"
+    assert i18n.t("form.main.select_action") == "Select action"
+    # Unknown keys return the key itself
+    assert i18n.t("nonexistent_key") == "nonexistent_key"
 
 
 def test_get_language_returns_string():

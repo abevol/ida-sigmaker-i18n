@@ -26,6 +26,11 @@ import idaapi
 import idc
 from sigmaker.i18n import _
 
+def _T(template: str, **kwargs: str) -> str:
+    for k, v in kwargs.items():
+        template = template.replace("{" + k + "}", v)
+    return template
+
 __author__ = "mahmoudimus"
 
 try:
@@ -363,14 +368,14 @@ class CheckContinuePrompt:
         minutes = int(self.elapsed_time // 60)
         seconds = int(self.elapsed_time % 60)
         time_str = f"{minutes}m {seconds}s" if minutes else f"{seconds}s"
-        message_lines = [_("%(func)s has been running for %(time)s.") % {"func": func_name, "time": time_str}, ""]
+        message_lines = [_("running_for") % {"func": func_name, "time": time_str}, ""]
 
         if self.metadata:
             for key, value in self.metadata.items():
                 message_lines.append(f"{key}: {value}")
             message_lines.append("")
 
-        message_lines.append(_("Continue?"))
+        message_lines.append(_("continue"))
         return "\n".join(message_lines)
 
     def _ask_to_continue(self, message: str) -> bool:
@@ -379,7 +384,7 @@ class CheckContinuePrompt:
         if qmessagebox is not None:
             reply = qmessagebox.question(
                 None,
-                _("Continue execution?"),
+                _("continue_title"),
                 message,
                 qmessagebox.Yes | qmessagebox.No,
                 qmessagebox.No,
@@ -1151,46 +1156,41 @@ class GeneratedSignature:
         user's clipboard contents.
         """
         if not self.signature:
-            idaapi.msg(_("Error: Empty signature\n"))
+            idaapi.msg(_('empty_sig'))
             return
         t = cfg.output_format.value
         fmted = format(self.signature, t)
 
         if self.status == GenerationStatus.PARTIAL_ON_CANCEL:
             count_str = (
-                _("%(count)d matches") % {"count": self.match_count}
+                _("match_count") % {"count": self.match_count}
                 if self.match_count is not None
-                else _("match count unavailable")
+                else _("match_count_unavailable")
             )
             if self.address is not None:
-                prefix = _(
-                    "Partial signature (NOT unique, %(count_str)s) for "
-                    "%(address)s%(func)s"
-                ) % {
+                prefix = _("partial_unique_for") % {
                     "count_str": count_str,
                     "address": str(self.address),
                     "func": _func_name_suffix(int(self.address)),
                 }
             else:
-                prefix = _("Partial signature (NOT unique, %(count_str)s)") % {
+                prefix = _("partial_unique") % {
                     "count_str": count_str,
                 }
-            idaapi.msg(_("%(prefix)s: %(fmted)s\n") % {"prefix": prefix, "fmted": fmted})
+            idaapi.msg(_('sig_prefix') % {"prefix": prefix, "fmted": fmted})
             return
 
         if self.address is not None:
-            idaapi.msg(_(
-                "Signature for %(address)s%(func)s: %(fmted)s\n"
-            ) % {
+            idaapi.msg(_("sig_for") % {
                 "address": str(self.address),
                 "func": _func_name_suffix(int(self.address)),
                 "fmted": fmted,
             })
         else:
-            idaapi.msg(_("Signature: %(fmted)s\n") % {"fmted": fmted})
+            idaapi.msg(_('sig_result') % {"fmted": fmted})
 
         if not Clipboard.set_text(fmted):
-            idaapi.msg(_("Failed to copy to clipboard!"))
+            idaapi.msg(_("clipboard_fail"))
 
     def _wildcard_count(self) -> int:
         """Number of wildcard bytes in this signature."""
@@ -1214,20 +1214,16 @@ class XrefGeneratedSignature:
     def display(self, cfg: SigMakerConfig) -> None:
         """Display the XREF signatures to the user."""
         if not self.signatures:
-            idaapi.msg(_("No XREFs have been found for your address\n"))
+            idaapi.msg(_('no_xrefs'))
             return
         t = cfg.output_format.value
         top_length = min(cfg.print_top_x, len(self.signatures))
-        idaapi.msg(_(
-            "Top %(top)d Signatures out of %(total)d xrefs:\n"
-        ) % {"top": top_length, "total": len(self.signatures)})
+        idaapi.msg(_("top_xrefs") % {"top": top_length, "total": len(self.signatures)})
         for i, generated_signature in enumerate(self.signatures[:top_length], start=1):
             address = generated_signature.address
             signature = generated_signature.signature
             fmted = format(signature, t)
-            idaapi.msg(_(
-                "XREF Signature #%(num)d @ %(addr)s%(func)s: %(sig)s\n"
-            ) % {
+            idaapi.msg(_("xref_sig") % {
                 "num": i,
                 "addr": str(address),
                 "func": _func_name_suffix(int(address)),
@@ -1623,12 +1619,7 @@ class UniqueSignatureGenerator:
         with _CancelToPartial(policy, build_partial) as cancel:
             for cur_ea, ins, ins_len in ProgressBox(
                 InstructionWalker(ea),
-                initial_message=_(
-                    "Create unique signature (from cursor address)\n\n"
-                    "Growing a pattern from the current address until it "
-                    "matches exactly one place in the binary.\n\n"
-                    "Press Cancel to stop"
-                ),
+                initial_message=_("progress.create_unique"),
                 format_message=progress,
             ):
                 # Modal continue-prompt opt-in (issue #18) still goes through
@@ -1646,7 +1637,7 @@ class UniqueSignatureGenerator:
                         not cfg.ask_longer_signature
                         or idaapi.ask_yn(
                             idaapi.ASKBTN_NO,
-                            _("Signature is already %(len)d bytes. Continue?") % {"len": len(sig)},
+                            _("sig_already") % {"len": len(sig)},
                         )
                         != idaapi.ASKBTN_YES
                     ):
@@ -1986,7 +1977,7 @@ class MinimalFunctionSignatureGenerator:
         buf: typing.Optional["InMemoryBuffer"] = None
         index: typing.Optional["_ByteIndex"] = None
         if SIMD_SPEEDUP_AVAILABLE:
-            with ProgressDialog(_("Please stand by, copying segments...")):
+            with ProgressDialog(_("progress.copy_segments")):
                 buf = InMemoryBuffer.load(
                     mode=InMemoryBuffer.LoadMode.SEGMENTS,
                     scope_ea=int(pfn.start_ea) if cfg.scope_to_segment else None,
@@ -2002,12 +1993,7 @@ class MinimalFunctionSignatureGenerator:
         for anchor_idx, di in ProgressBox(
             enumerate(decoded),
             total=len(decoded),
-            initial_message=_(
-                "Find shortest function signature\n\n"
-                "Trying every instruction in the function as a start point; "
-                "growing each until unique and keeping the shortest.\n\n"
-                "Press Cancel to stop"
-            ),
+            initial_message=_("progress.find_fn_sig"),
             format_message=progress,
         ):
             if (
@@ -2398,12 +2384,7 @@ class XrefFinder:
             if self.progress_dialog.user_canceled():
                 break
 
-            self.progress_dialog.replace_message(_(
-                "Find shortest XREF signature\n\n"
-                "Processing xref %(i)d of %(total)d (%(pct).1f%%)...\n\n"
-                "Suitable Signatures: %(suitable)d\n"
-                "Shortest Signature: %(shortest)d Bytes"
-            ) % {
+            self.progress_dialog.replace_message(_("progress.xref_progress") % {
                 "i": i,
                 "total": total,
                 "pct": (i / total) * 100.0,
@@ -2440,10 +2421,10 @@ class SearchResults:
 
     def display(self) -> None:
         """Display the search results to the user."""
-        idaapi.msg(_("Signature: %(sig)s\n") % {"sig": self.signature_str})
+        idaapi.msg(_('sig_search_result') % {"sig": self.signature_str})
 
         if not self.matches:
-            idaapi.msg(_("Signature does not match!\n"))
+            idaapi.msg(_('sig_no_match'))
             return
 
         for ea in self.matches:
@@ -2451,9 +2432,9 @@ class SearchResults:
             with contextlib.suppress(BaseException):
                 fn_name = idaapi.get_func_name(int(ea))
             if fn_name:
-                idaapi.msg(_("Match @ %(addr)s in %(func)s\n") % {"addr": str(ea), "func": fn_name})
+                idaapi.msg(_('match_in') % {"addr": str(ea), "func": fn_name})
             else:
-                idaapi.msg(_("Match @ %(addr)s\n") % {"addr": str(ea)})
+                idaapi.msg(_('match_at') % {"addr": str(ea)})
 
 
 class SignatureParser:
@@ -2495,9 +2476,7 @@ class SignatureParser:
             ):
                 parsed = cls._masked_bytes_to_ida(bytestr, mask, slice_from=2)
             else:
-                idaapi.msg(_(
-                    'Detected mask "%(mask)s" but failed to match corresponding bytes\n'
-                ) % {"mask": mask})
+                idaapi.msg(_("mask_detect_fail") % {"mask": mask})
         else:
             # Fallback: normalize a loose byte string into IDA format
             parsed = cls._normalize_loose_hex(input_str)
@@ -2581,7 +2560,7 @@ class SignatureSearcher:
         """
         sig_str = SignatureParser.parse(self.input_signature)
         if not sig_str:
-            idaapi.msg(_("Unrecognized signature type\n"))
+            idaapi.msg(_('unrecognized_sig'))
             return SearchResults([], "")
 
         scope = None
@@ -2592,11 +2571,7 @@ class SignatureSearcher:
 
         where = "the current segment" if scope else "the whole database"
         # Wrap the search in a ProgressDialog to allow cancellation
-        with ProgressDialog(_(
-            "Search for a signature\n\n"
-            "Scanning %(scope)s for your pattern.\n\n"
-            "Press Cancel to stop"
-        ) % {"scope": where}):
+        with ProgressDialog(_("progress.search_sig") % {"scope": where}):
             matches = self.find_all(sig_str, scope=scope)
 
         return SearchResults(matches, sig_str)
@@ -2609,7 +2584,7 @@ class SignatureSearcher:
     ) -> list[Match]:
         simd_signature, _ = SigText.normalize(ida_signature)
         if buf is None:
-            with ProgressDialog(_("Please stand by, copying segments...")):
+            with ProgressDialog(_("progress.copy_segments")):
                 buf = InMemoryBuffer.load(mode=InMemoryBuffer.LoadMode.SEGMENTS)
         data_mv = buf.data()
         LOGGER.debug(
@@ -2668,7 +2643,7 @@ class SignatureSearcher:
         """
         simd_signature, _ = SigText.normalize(ida_signature)
         if buf is None:
-            with ProgressDialog(_("Please stand by, copying segments...")):
+            with ProgressDialog(_("progress.copy_segments")):
                 buf = InMemoryBuffer.load(mode=InMemoryBuffer.LoadMode.SEGMENTS)
         data_mv = buf.data()
         sig = _SimdSignature(simd_signature)
@@ -2709,7 +2684,7 @@ class SignatureSearcher:
                 # Scope the SIMD scan to one segment by loading only its bytes;
                 # offset_mapper resolves the match offsets back to real
                 # addresses (issue #64 search-scope, on top of #68).
-                with ProgressDialog(_("Please stand by, copying the segment...")):
+                with ProgressDialog(_("progress.copy_segment")):
                     buf = InMemoryBuffer.load(
                         mode=InMemoryBuffer.LoadMode.SEGMENTS, scope_ea=scope[0]
                     )
@@ -2977,7 +2952,7 @@ class ProgressBox:
 
     iterable: typing.Iterable
     total: typing.Optional[int] = None
-    initial_message: str = _("Executing...")
+    initial_message: str = _("executing")
     format_message: typing.Optional[
         typing.Callable[[int, typing.Any, float, typing.Optional[int]], str]
     ] = None
@@ -3012,11 +2987,11 @@ class ProgressBox:
                     if self.format_message is not None:
                         msg = self.format_message(idx, item, elapsed, self.total)
                     elif self.total:
-                        msg = _("Processing (%(idx)d/%(total)d) | Elapsed: %(elapsed)ds") % {
+                        msg = _("progress.processing_total") % {
                             "idx": idx, "total": self.total, "elapsed": int(elapsed),
                         }
                     else:
-                        msg = _("Processing (%(idx)d) | Elapsed: %(elapsed)ds") % {
+                        msg = _("progress.processing_idx") % {
                             "idx": idx, "elapsed": int(elapsed),
                         }
                     dialog.replace_message(msg)
@@ -3036,15 +3011,7 @@ class _UniqueSigProgress:
 
     sig: "Signature"
     last_match_count: typing.Optional[int] = None
-    _TEMPLATE: typing.ClassVar[str] = _(
-        "Create unique signature (from cursor address)\n"
-        "Growing a pattern from the current address until it matches\n"
-        "exactly one place in the binary.\n\n"
-        "Length:  %(length)s bytes\n"
-        "Matches: %(matches)s\n"
-        "Elapsed: %(elapsed)s\n\n"
-        "Press Cancel to stop"
-    )
+    _TEMPLATE: typing.ClassVar[str] = _("progress.unique_sig_detail")
 
     def __call__(self, idx, item, elapsed, total) -> str:
         match_str = "?" if self.last_match_count is None else str(self.last_match_count)
@@ -3074,20 +3041,7 @@ class _FunctionSigProgress:
     current_anchor_ea: int = 0
     inner_length: int = 0
     inner_matches: typing.Optional[int] = None
-    _TEMPLATE: typing.ClassVar[str] = _(
-        "Find shortest function signature\n"
-        "Trying every instruction as a start point; keeping the shortest unique one.\n"
-        "\n"
-        "Function:     %(fn_bounds)s  (%(fn_size)d bytes)\n"
-        "Anchor (#%(idx)d): %(anchor)s\n"
-        "Inner search: %(inner_bounds)s  (%(inner_length)d bytes, "
-        "%(inner_matches_str)s)\n"
-        "Best found:   %(best)s\n"
-        "Candidates:   %(candidates_count)d unique so far\n"
-        "Elapsed:      %(elapsed)d\n"
-        "\n"
-        "Press Cancel to stop"
-    )
+    _TEMPLATE: typing.ClassVar[str] = _("progress.fn_sig_detail")
 
     def __call__(self, idx, item, elapsed, total) -> str:
         fn_bounds = f"{self.pfn_start_ea:#x} .. {self.pfn_end_ea:#x}"
@@ -3096,10 +3050,10 @@ class _FunctionSigProgress:
         inner_end = anchor_ea + self.inner_length
         inner_bounds = f"{anchor_ea:#x} .. {inner_end:#x}"
         if self.inner_matches is None:
-            inner_matches_str = _("scanning...")
+            inner_matches_str = _("scanning")
         else:
-            inner_matches_str = _("%(count)d matches so far") % {"count": self.inner_matches}
-        best = _("%(size)d bytes") % {"size": self.best_size} if self.candidates else "-"
+            inner_matches_str = _("match_count_sofar") % {"count": self.inner_matches}
+        best = _("size_bytes") % {"size": self.best_size} if self.candidates else "-"
         return self._TEMPLATE % {
             "fn_bounds": fn_bounds,
             "fn_size": fn_size,
@@ -3135,7 +3089,7 @@ class Clipboard:
             QApplication.clipboard().setText(text)
             return True
         except (ImportError, Exception) as e:
-            idaapi.msg(_("Error setting clipboard text: %(e)s") % {"e": e})
+            idaapi.msg(_("clipboard_error") % {"e": e})
             return False
 
     @classmethod
@@ -3165,57 +3119,86 @@ class Clipboard:
 class ConfigureOperandWildcardBitmaskForm(idaapi.Form):
     """Interactive form to configure wildcardable operands using checkboxes."""
 
-    _BASE_TEMPLATE = _(
+    _BASE_TEMPLATE = _T(
         "BUTTON YES* OK\n"
         "BUTTON CANCEL Cancel\n"
-        "Wildcardable Operands\n"
+        "{title}\n"
         "{FormChangeCb}\n"
-        "Select operand types that should be wildcarded:\n"
+        "{hint}\n"
         "\n"
-        "<General Register (al, ax, es, ds...):{opt1}>\n"
-        "<Direct Memory Reference (DATA) :{opt2}>\n"
-        "<Memory Ref [Base Reg + Index Reg] :{opt3}>\n"
-        "<Memory Ref [Base Reg + Index Reg + Displacement] :{opt4}>\n"
-        "<Immediate Value :{opt5}>\n"
-        "<Immediate Far Address (CODE) :{opt6}>\n"
-        "<Immediate Near Address (CODE) :{opt7}>"
+        "<{general_reg}:{opt1}>\n"
+        "<{mem_ref} :{opt2}>\n"
+        "<{phrase} :{opt3}>\n"
+        "<{displ} :{opt4}>\n"
+        "<{imm} :{opt5}>\n"
+        "<{far} :{opt6}>\n"
+        "<{near} :{opt7}>",
+        title=_("form.operand.title"),
+        hint=_("form.operand.select_hint"),
+        general_reg=_("form.operand.general_reg"),
+        mem_ref=_("form.operand.mem_ref"),
+        phrase=_("form.operand.phrase"),
+        displ=_("form.operand.displ"),
+        imm=_("form.operand.imm"),
+        far=_("form.operand.far"),
+        near=_("form.operand.near"),
     )
 
-    _X86_TEMPLATE = _(
+    _X86_SECTION = _T(
         "\n"
-        "<Trace Register :{opt8}>\n"
-        "<Debug Register :{opt9}>\n"
-        "<Control Register :{opt10}>\n"
-        "<Floating Point Register :{opt11}>\n"
-        "<MMX Register :{opt12}>\n"
-        "<XMM Register :{opt13}>\n"
-        "<YMM Register :{opt14}>\n"
-        "<ZMM Register :{opt15}>\n"
-        "<Opmask Register :{opt16}>{cWildcardableOperands}>"
+        "<{trace_reg}:{opt8}>\n"
+        "<{debug_reg}:{opt9}>\n"
+        "<{control_reg}:{opt10}>\n"
+        "<{fp_reg}:{opt11}>\n"
+        "<{mmx_reg}:{opt12}>\n"
+        "<{xmm_reg}:{opt13}>\n"
+        "<{ymm_reg}:{opt14}>\n"
+        "<{zmm_reg}:{opt15}>\n"
+        "<{opmask_reg}:{opt16}>{cWildcardableOperands}>",
+        trace_reg=_("form.operand.trace_reg"),
+        debug_reg=_("form.operand.debug_reg"),
+        control_reg=_("form.operand.control_reg"),
+        fp_reg=_("form.operand.fp_reg"),
+        mmx_reg=_("form.operand.mmx_reg"),
+        xmm_reg=_("form.operand.xmm_reg"),
+        ymm_reg=_("form.operand.ymm_reg"),
+        zmm_reg=_("form.operand.zmm_reg"),
+        opmask_reg=_("form.operand.opmask_reg"),
     )
 
-    _ARM_TEMPLATE = _(
+    _ARM_SECTION = _T(
         "\n"
-        "<(Unused) :{opt8}>\n"
-        "<Register list (for LDM/STM) :{opt9}>\n"
-        "<Coprocessor register list (for CDP) :{opt10}>\n"
-        "<Coprocessor register (for LDC/STC) :{opt11}>\n"
-        "<Floating point register list :{opt12}>\n"
-        "<Arbitrary text stored in the operand :{opt13}>\n"
-        "<ARM condition as an operand :{opt14}>{cWildcardableOperands}>"
+        "<{unused}:{opt8}>\n"
+        "<{reg_list}:{opt9}>\n"
+        "<{coproc_list}:{opt10}>\n"
+        "<{coproc_reg}:{opt11}>\n"
+        "<{fp_list}:{opt12}>\n"
+        "<{arbitrary_text}:{opt13}>\n"
+        "<{arm_cond}:{opt14}>{cWildcardableOperands}>",
+        unused=_("form.operand.unused"),
+        reg_list=_("form.operand.reg_list"),
+        coproc_list=_("form.operand.coproc_list"),
+        coproc_reg=_("form.operand.coproc_reg"),
+        fp_list=_("form.operand.fp_list"),
+        arbitrary_text=_("form.operand.arbitrary_text"),
+        arm_cond=_("form.operand.arm_cond"),
     )
 
-    _PPC_TEMPLATE = _(
+    _PPC_SECTION = _T(
         "\n"
-        "<Special purpose register :{opt8}>\n"
-        "<Two FPRs :{opt9}>\n"
-        "<SH & MB & ME :{opt10}>\n"
-        "<crfield :{opt11}>\n"
-        "<crbit :{opt12}>\n"
-        "<Device control register :{opt13}>{cWildcardableOperands}>"
+        "<{spr}:{opt8}>\n"
+        "<{two_fpr}:{opt9}>\n"
+        "<{sh_mb_me}:{opt10}>\n"
+        "<{crfield}:{opt11}>\n"
+        "<{crbit}:{opt12}>\n"
+        "<{dcr}:{opt13}>{cWildcardableOperands}>",
+        spr=_("form.operand.spr"),
+        two_fpr=_("form.operand.two_fpr"),
+        sh_mb_me=_("form.operand.sh_mb_me"),
+        crfield=_("form.operand.crfield"),
+        crbit=_("form.operand.crbit"),
+        dcr=_("form.operand.dcr"),
     )
-
-    _FALLBACK_TEMPLATE = _("{cWildcardableOperands}>\n")
 
     def __init__(self) -> None:
         F = idaapi.Form
@@ -3279,26 +3262,34 @@ class ConfigureOperandWildcardBitmaskForm(idaapi.Form):
 class ConfigureOptionsForm(idaapi.Form):
     """Interactive form to configure XREF and signature generation options."""
 
-    _TEMPLATE = _(
-        "BUTTON YES* OK\n"
-        "BUTTON CANCEL Cancel\n"
-        "Options\n"
-        "\n"
-        "<#Print top X shortest signatures when generating xref signatures#Print top X XREF signatures     :{opt1}>\n"
-        "<#Stop after reaching X bytes when generating a single signature#Maximum single signature length :{opt2}>\n"
-        "<#Stop after reaching X bytes when generating xref signatures#Maximum xref signature length   :{opt3}>\n"
-        "<#Seconds before the first 'Continue?' prompt fires. -1 disables the prompt entirely (default).#Prompt interval (seconds, -1 disables):{opt4}>\n"
-    )
-
     def __init__(self) -> None:
         F = idaapi.Form
+        form_text = _T(
+            "BUTTON YES* OK\n"
+            "BUTTON CANCEL Cancel\n"
+            "{title}\n"
+            "\n"
+            "<#{top_x_tt}#{top_x}     :{opt1}>\n"
+            "<#{max_single_tt}#{max_single} :{opt2}>\n"
+            "<#{max_xref_tt}#{max_xref}   :{opt3}>\n"
+            "<#{prompt_tt}#{prompt}:{opt4}>\n",
+            title=_("form.options.title"),
+            top_x_tt=_("form.options.top_x_tt"),
+            top_x=_("form.options.top_x"),
+            max_single_tt=_("form.options.max_single_tt"),
+            max_single=_("form.options.max_single"),
+            max_xref_tt=_("form.options.max_xref_tt"),
+            max_xref=_("form.options.max_xref"),
+            prompt_tt=_("form.options.prompt_interval_tt"),
+            prompt=_("form.options.prompt_interval"),
+        )
         self.controls = {
             "opt1": F.NumericInput(tp=F.FT_DEC),
             "opt2": F.NumericInput(tp=F.FT_DEC),
             "opt3": F.NumericInput(tp=F.FT_DEC),
             "opt4": F.NumericInput(tp=F.FT_DEC),
         }
-        super().__init__(self._TEMPLATE, self.controls)
+        super().__init__(form_text, self.controls)
 
     def ExecuteForm(self) -> int:
         """Execute the form and apply changes to global variables."""
@@ -3325,45 +3316,76 @@ class ConfigureOptionsForm(idaapi.Form):
 class SignatureMakerForm(idaapi.Form):
     """Main form presented when the user invokes the SigMaker plugin."""
 
-    _TEMPLATE = _(
+    _TEMPLATE = _T(
         "STARTITEM 0\n"
         "BUTTON YES* OK\n"
         "BUTTON CANCEL Cancel\n"
         "%(title)s\n"
         "{FormChangeCb}\n"
-        "Select action:\n"
-        "<#Select an address, and create a code signature for it#Create unique signature for current code address:{rCreateUniqueSig}>\n"
-        "<#Select an address or variable, and create code signatures for its references. Will output the shortest 5 signatures#Find shortest XREF signature for current data or code address:{rFindXRefSig}>\n"
-        "<#Select 1+ instructions, and copy the bytes using the specified output format#Copy selected code:{rCopyCode}>\n"
-        "<#Paste any string containing your signature/mask and find matches#Search for a signature:{rSearchSignature}>\n"
-        "<#Find the shortest unique signature anywhere inside the current function, with automatic xref fallback if the function body is not unique#Find shortest unique signature for current function:{rFindFunctionSig}>{rAction}>\n"
+        "{select_action}:\n"
+        "<#{create_unique_tt}#{create_unique}:{rCreateUniqueSig}>\n"
+        "<#{find_xref_tt}#{find_xref}:{rFindXRefSig}>\n"
+        "<#{copy_code_tt}#{copy_code}:{rCopyCode}>\n"
+        "<#{search_sig_tt}#{search_sig}:{rSearchSignature}>\n"
+        "<#{find_fn_sig_tt}#{find_fn_sig}:{rFindFunctionSig}>{rAction}>\n"
         "\n"
-        "Output format:\n"
-        "<#Example - E8 ? ? ? ? 45 33 F6 66 44 89 34 33#IDA Signature:{rIDASig}>\n"
-        "<#Example - E8 ?? ?? ?? ?? 45 33 F6 66 44 89 34 33#x64Dbg Signature:{rx64DbgSig}>\n"
-        "<#Example - "
-        "\\\\" "\\xE8" "\\\\" "\\x00" "\\\\" "\\x00" "\\\\" "\\x00" "\\\\" "\\x00"
-        "\\\\" "\\x45" "\\\\" "\\x33" "\\\\" "\\xF6" "\\\\" "\\x66" "\\\\" "\\x44"
-        "\\\\" "\\x89" "\\\\" "\\x34" "\\\\" "\\x33"
-        " x????xxxxxxxx"
-        "#C Byte Array Signature String + String mask:{rByteArrayMaskSig}>\n"
-        "<#Example - 0xE8, 0x00, 0x00, 0x00, 0x00, 0x45, 0x33, 0xF6, 0x66, 0x44, 0x89, 0x34, 0x33 0b1111111100001#C Bytes Signature + Bitmask:{rRawBytesBitmaskSig}>{rOutputFormat}>\n"
+        "{output_format}:\n"
+        "<#{ida_sig_tt}#{ida_sig}:{rIDASig}>\n"
+        "<#{x64dbg_sig_tt}#{x64dbg_sig}:{rx64DbgSig}>\n"
+        "<#{mask_sig_tt}#{mask_sig}:{rByteArrayMaskSig}>\n"
+        "<#{bitmask_sig_tt}#{bitmask_sig}:{rRawBytesBitmaskSig}>{rOutputFormat}>\n"
         "\n"
-        "Quick Options:\n"
-        "<#Enable wildcarding for operands, to improve stability of created signatures#Wildcards for operands:{cWildcardOperands}>\n"
-        "<#Don't stop signature generation when reaching end of function#Continue when leaving function scope:{cContinueOutside}>\n"
-        "<#Wildcard the whole instruction when the operand (usually a register) is encoded into the operator#Wildcard optimized / combined instructions:{cWildcardOptimized}>\n"
-        "<#Opt-in -- show periodic 'Continue?' prompts while generating. Default is a wait-box with a Cancel button.#Enable continue prompt (opt-in):{cEnablePrompt}>\n"
-        "<#Opt-in -- when you cancel a unique-signature search, output the partial signature (with match count) instead of nothing. Default off. (Issue #22)#Output partial signature on cancel (opt-in):{cOutputPartialOnCancel}>\n"
-        "<#Opt-in -- scope to the segment containing the anchor instead of the whole database, so functions duplicated across segments (e.g. a boot section and a main section) can be signed. Creation checks uniqueness within that segment; Search is scoped to the segment under your cursor. (Issue #64)#Limit uniqueness and search to the containing segment (opt-in):{cScopeToSegment}>{cGroupOptions}>\n"
+        "{quick_options}:\n"
+        "<#{wildcards_tt}#{wildcards}:{cWildcardOperands}>\n"
+        "<#{continue_outside_tt}#{continue_outside}:{cContinueOutside}>\n"
+        "<#{wildcard_opt_tt}#{wildcard_opt}:{cWildcardOptimized}>\n"
+        "<#{enable_prompt_tt}#{enable_prompt}:{cEnablePrompt}>\n"
+        "<#{partial_on_cancel_tt}#{partial_on_cancel}:{cOutputPartialOnCancel}>\n"
+        "<#{scope_to_segment_tt}#{scope_to_segment}:{cScopeToSegment}>{cGroupOptions}>\n"
         "\n"
-        "<Operand types...:{bOperandTypes}><Other options...:{bOtherOptions}>\n"
+        "<{operand_types}:{bOperandTypes}><{other_options}:{bOtherOptions}>\n",
+        select_action=_("form.main.select_action"),
+        create_unique_tt=_("form.main.create_unique_tt"),
+        create_unique=_("form.main.create_unique"),
+        find_xref_tt=_("form.main.find_xref_tt"),
+        find_xref=_("form.main.find_xref"),
+        copy_code_tt=_("form.main.copy_code_tt"),
+        copy_code=_("form.main.copy_code"),
+        search_sig_tt=_("form.main.search_sig_tt"),
+        search_sig=_("form.main.search_sig"),
+        find_fn_sig_tt=_("form.main.find_fn_sig_tt"),
+        find_fn_sig=_("form.main.find_fn_sig"),
+        output_format=_("form.main.output_format"),
+        ida_sig_tt=_("form.main.ida_sig_tt"),
+        ida_sig=_("form.main.ida_sig"),
+        x64dbg_sig_tt=_("form.main.x64dbg_sig_tt"),
+        x64dbg_sig=_("form.main.x64dbg_sig"),
+        mask_sig_tt=_("form.main.mask_sig_tt"),
+        mask_sig=_("form.main.mask_sig"),
+        bitmask_sig_tt=_("form.main.bitmask_sig_tt"),
+        bitmask_sig=_("form.main.bitmask_sig"),
+        quick_options=_("form.main.quick_options"),
+        wildcards_tt=_("form.main.wildcards_tt"),
+        wildcards=_("form.main.wildcards"),
+        continue_outside_tt=_("form.main.continue_outside_tt"),
+        continue_outside=_("form.main.continue_outside"),
+        wildcard_opt_tt=_("form.main.wildcard_opt_tt"),
+        wildcard_opt=_("form.main.wildcard_opt"),
+        enable_prompt_tt=_("form.main.enable_prompt_tt"),
+        enable_prompt=_("form.main.enable_prompt"),
+        partial_on_cancel_tt=_("form.main.partial_on_cancel_tt"),
+        partial_on_cancel=_("form.main.partial_on_cancel"),
+        scope_to_segment_tt=_("form.main.scope_to_segment_tt"),
+        scope_to_segment=_("form.main.scope_to_segment"),
+        operand_types=_("form.main.operand_types"),
+        other_options=_("form.main.other_options"),
     )
 
     def __init__(self) -> None:
         F = idaapi.Form
         simd_status = "(SIMD ENABLED)" if SIMD_SPEEDUP_AVAILABLE else "(NO SIMD SPEEDUP)"
-        form_text = self._TEMPLATE % {"title": f"{PLUGIN_NAME} v{PLUGIN_VERSION} {simd_status}"}
+        title = f"{PLUGIN_NAME} v{PLUGIN_VERSION} {simd_status}"
+        form_text = self._TEMPLATE % {"title": title}
         controls = {
             "cVersion": F.StringLabel(PLUGIN_VERSION),
             "FormChangeCb": F.FormChangeCb(self.OnFormChange),
@@ -3482,10 +3504,10 @@ class SigMakerPlugin(idaapi.plugin_t):
     """IDA Pro plugin class implementing signature generation and search."""
 
     flags = idaapi.PLUGIN_KEEP
-    comment = _("%(name)s v%(version)s for IDA Pro by %(author)s") % {
+    comment = _("plugin_info") % {
         "name": PLUGIN_NAME, "version": PLUGIN_VERSION, "author": PLUGIN_AUTHOR,
     }
-    help = _("Select location in disassembly and press CTRL+ALT+S to open menu")
+    help = _("plugin_help")
     wanted_name = PLUGIN_NAME
     wanted_hotkey = "Ctrl-Alt-S"
 
@@ -3522,29 +3544,29 @@ class SigMakerPlugin(idaapi.plugin_t):
         idaapi.register_action(
             idaapi.action_desc_t(
                 self.ACTION_SHOW_SIGMAKER,
-                _("SigMaker"),
+                _("action.sigmaker"),
                 _ActionHandler(self.run),
                 self.wanted_hotkey,
-                _("Show the signature maker dialog."),
+                _("action.sigmaker_tt"),
                 154,
             )
         )
         idaapi.register_action(
             idaapi.action_desc_t(
                 self.ACTION_START_PROFILING,
-                _("Start Profiling"),
+                _("action.start_profiling"),
                 _ActionHandler(self._action_start_profiling, always_enabled=True),
                 None,
-                _("Start a cProfile session capturing subsequent SigMaker activity."),
+                _("action.start_profiling_tt"),
             )
         )
         idaapi.register_action(
             idaapi.action_desc_t(
                 self.ACTION_STOP_PROFILING,
-                _("Stop Profiling"),
+                _("action.stop_profiling"),
                 _ActionHandler(self._action_stop_profiling, always_enabled=True),
                 None,
-                _("Stop the active cProfile session and write the dump to the user IDA dir."),
+                _("action.stop_profiling_tt"),
             )
         )
 
@@ -3608,21 +3630,16 @@ class SigMakerPlugin(idaapi.plugin_t):
             elif action == Action.COPY_RANGE:
                 start, end = self.get_selected_addresses(idaapi.get_current_viewer())
                 if start and end:
-                    with ProgressDialog(_(
-                        "Copy selected code\n\n"
-                        "Building a signature for the selected address "
-                        "range.\n\n"
-                        "Press Cancel to stop"
-                    )):
+                    with ProgressDialog(_("progress.copy_code")):
                         signature = SignatureMaker().make_signature(
                             start, config, end=end
                         )
                     signature.display(config)
                 else:
-                    idaapi.msg(_("Select a range to copy the code!\n"))
+                    idaapi.msg(_('select_range'))
             elif action == Action.SEARCH:
                 input_signature = idaapi.ask_str(
-                    "", idaapi.HIST_SRCH, _("Enter a signature")
+                    "", idaapi.HIST_SRCH, _("enter_sig")
                 )
                 if input_signature:
                     # Reuse the "containing segment" opt-in to scope the search
@@ -3636,16 +3653,16 @@ class SigMakerPlugin(idaapi.plugin_t):
                     results = searcher.search(scope_ea=scope_ea)
                     results.display()
                 else:
-                    idaapi.msg(_("No signature entered!\n"))
+                    idaapi.msg(_('no_sig_entered'))
             elif action == Action.FIND_FUNCTION_SIG:
                 self._run_find_function_sig(config)
             else:
-                idaapi.msg(_("Invalid action!\n"))
+                idaapi.msg(_('invalid_action'))
         except Unexpected as e:
-            idaapi.msg(_("Error: %(msg)s\n") % {"msg": str(e)})
+            idaapi.msg(_('sig_error') % {"msg": str(e)})
         except UserCanceledError:
             # User cancellation is expected, not an error
-            idaapi.msg(_("Operation canceled by user\n"))
+            idaapi.msg(_('operation_canceled'))
         except Exception as e:
             LOGGER.error("Exception occurred: %s%s%s", e, os.linesep, traceback.format_exc())
             return
@@ -3656,7 +3673,7 @@ class SigMakerPlugin(idaapi.plugin_t):
         ea = idaapi.get_screen_ea()
         pfn = idaapi.get_func(ea)
         if pfn is None:
-            idaapi.msg(_("Place cursor inside a function first.\n"))
+            idaapi.msg(_('place_cursor_fn'))
             return
 
         try:
@@ -3667,10 +3684,7 @@ class SigMakerPlugin(idaapi.plugin_t):
             )
             result = generator.generate(pfn, config)
             offset = int(result.address) - int(pfn.start_ea)
-            idaapi.msg(_(
-                "Function signature (offset +%(offset)s into function "
-                "%(func_start)s%(func_name)s):\n"
-            ) % {
+            idaapi.msg(_("fn_sig") % {
                 "offset": hex(offset),
                 "func_start": hex(pfn.start_ea),
                 "func_name": _func_name_suffix(int(pfn.start_ea)),
@@ -3678,27 +3692,17 @@ class SigMakerPlugin(idaapi.plugin_t):
             result.display(config)
             return
         except Unexpected:
-            idaapi.msg(_(
-                "No unique signature inside function "
-                "%(func_start)s; trying xref signatures...\n"
-            ) % {"func_start": hex(pfn.start_ea)})
+            idaapi.msg(_("no_fn_sig") % {"func_start": hex(pfn.start_ea)})
 
-        with ProgressDialog(_(
-            "Falling back to xref signatures...\n\nPress Cancel to stop"
-        )):
+        with ProgressDialog(_("xref_fallback")):
             xref_result = XrefFinder().find_xrefs(pfn.start_ea, config)
 
         if xref_result.signatures:
             best = xref_result.signatures[0]
-            idaapi.msg(_(
-                "Xref signature into %(func_start)s (from %(addr)s):\n"
-            ) % {"func_start": hex(pfn.start_ea), "addr": str(best.address)})
+            idaapi.msg(_("xref_sig_into") % {"func_start": hex(pfn.start_ea), "addr": str(best.address)})
             best.display(config)
         else:
-            idaapi.msg(_(
-                "No unique signature found for function %(func_start)s "
-                "(no unique sig within body and no usable xrefs)\n"
-            ) % {"func_start": hex(pfn.start_ea)})
+            idaapi.msg(_("no_sig_found") % {"func_start": hex(pfn.start_ea)})
 
     def term(self) -> None:
         self._deregister_actions()
@@ -3726,18 +3730,16 @@ class SigMakerPlugin(idaapi.plugin_t):
 
         start_ea = idaapi.get_screen_ea()
         try:
-            end_ea = idaapi.ask_addr(start_ea, _("Enter end address for selection:"))
+            end_ea = idaapi.ask_addr(start_ea, _("enter_end_addr"))
         finally:
             idaapi.jumpto(start_ea)
 
         if end_ea and end_ea <= start_ea:
-            idaapi.msg(_(
-                "Error: End address %(end_addr)s must be greater than start address %(start_addr)s."
-            ) % {"end_addr": f"0x{end_ea:X}", "start_addr": f"0x{start_ea:X}"})
+            idaapi.msg(_("addr_error") % {"end_addr": f"0x{end_ea:X}", "start_addr": f"0x{start_ea:X}"})
             end_ea = None
         if end_ea is None:
             end_ea = idc.get_item_end(start_ea)
-            idaapi.msg(_("No end address selected, using line end: %(ea)s") % {"ea": f"0x{end_ea:X}"})
+            idaapi.msg(_("addr_no_end") % {"ea": f"0x{end_ea:X}"})
 
         return start_ea, end_ea
 
