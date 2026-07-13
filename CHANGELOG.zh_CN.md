@@ -2,6 +2,29 @@
 
 本插件的所有重要用户可见变更均记录在此。格式遵循 [Keep a Changelog](https://keepachangelog.com/)，项目遵循[语义化版本](https://semver.org/)。
 
+## [1.12.0] - 2026-07-13
+
+### 新增
+
+- **多语言支持（中文 + 英文）。** 插件 UI 现在自动检测系统区域设置。中文系统显示翻译后的对话框、工具提示和消息；其他语言环境回退到英文。基于 Python 标准库 `gettext` 实现，零新增运行时依赖。
+
+### 变更
+
+- **发布格式改为 zip + 加载器。** 不再发布单个 `sigmaker.py`，改为 `sigmaker-*.zip`，内含 `sigmaker_loader.py`（放在 `plugins/` 目录供 IDA 加载）和 `sigmaker/` 子目录（包含插件代码、i18n 模块和翻译文件）。解压 zip 到 IDA 的 `plugins/` 目录即可。
+
+- **版本号自动从 git 标签检测。** `__init__.py` 中的硬编码 `__version__` 已移除。包版本在构建时从最近的 `v*` git 标签派生；pip 安装的副本通过 `importlib.metadata` 运行时获取版本。
+
+- **CI 工作流已为 i18n 和 setuptools-scm 更新。** 翻译 `.mo` 文件在 CI 期间编译。`SETUPTOOLS_SCM_PRETEND_VERSION` 传递给 Docker 容器和 cibuildwheel，确保无 git 二进制文件的构建环境中版本号正确。
+
+### 内部
+
+- 新增 `src/sigmaker/i18n.py` 模块，处理区域检测和 gettext 初始化。
+- `ida-plugin.json` 入口点更新为 `sigmaker_loader.py`。
+- `pyproject.toml` 的 package-data 新增 `*.mo` 和 `*.po`。
+- `tools/sync_plugin_version.py` 改为从 `git describe` 读取版本号。
+
+[1.12.0]: https://github.com/mahmoudimus/ida-sigmaker/compare/v1.11.0...v1.12.0
+
 ## [1.11.0] - 2026-07-05
 
 ### 新增

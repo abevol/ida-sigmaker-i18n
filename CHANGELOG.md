@@ -2,6 +2,29 @@
 
 All notable user-visible changes to this plugin are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.12.0] - 2026-07-13
+
+### Added
+
+- **Multi-language support (Chinese + English).** The plugin UI now auto-detects your system locale. Chinese-language systems see translated dialogs, tooltips, and messages; everything else falls back to English. Powered by Python stdlib `gettext` with zero new runtime dependencies.
+
+### Changed
+
+- **Release format switched to zip + loader.** Instead of a single `sigmaker.py`, releases now ship as `sigmaker-*.zip` containing `sigmaker_loader.py` (placed in `plugins/` for IDA to load) and a `sigmaker/` subdirectory with the plugin code, i18n module, and locale files. Extract the zip into your IDA `plugins/` directory.
+
+- **Version auto-detected from git tags via setuptools-scm.** The hardcoded `__version__` in `__init__.py` is gone. Package version is derived from the nearest `v*` git tag at build time, with `importlib.metadata` as a runtime fallback for pip-installed copies.
+
+- **CI workflows updated for i18n and setuptools-scm.** Translation `.mo` files are compiled during CI. `SETUPTOOLS_SCM_PRETEND_VERSION` is passed to Docker containers and cibuildwheel so versioning works without a git binary inside the build environment.
+
+### Internal
+
+- New `src/sigmaker/i18n.py` module handles locale detection and gettext initialisation.
+- `ida-plugin.json` entry point updated to `sigmaker_loader.py`.
+- `pyproject.toml` package-data now includes `*.mo` and `*.po`.
+- `tools/sync_plugin_version.py` reads version from `git describe` instead of AST-parsing `__init__.py`.
+
+[1.12.0]: https://github.com/mahmoudimus/ida-sigmaker/compare/v1.11.0...v1.12.0
+
 ## [1.11.0] - 2026-07-05
 
 ### Added
