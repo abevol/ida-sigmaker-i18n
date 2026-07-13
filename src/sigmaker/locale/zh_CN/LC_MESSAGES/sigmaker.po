@@ -62,7 +62,7 @@ msgstr ""
 msgid "continue_title"
 msgstr ""
 
-# Error: Empty signature 
+# Error: Empty signature\n
 msgid "empty_sig"
 msgstr ""
 
@@ -78,7 +78,7 @@ msgstr ""
 msgid "executing"
 msgstr ""
 
-# Function signature (offset +%(offset)s into function %(func_start)s%(func_name)s): 
+# Function signature (offset +%(offset)s into function %(func_start)s%(func_name)s):\n
 msgid "fn_sig"
 msgstr ""
 
@@ -382,15 +382,15 @@ msgstr ""
 msgid "form.options.top_x_tt"
 msgstr ""
 
-# Invalid action! 
+# Invalid action!\n
 msgid "invalid_action"
 msgstr ""
 
-# Detected mask \"%(mask)s\" but failed to match corresponding bytes 
+# Detected mask \"%(mask)s\" but failed to match corresponding bytes\n
 msgid "mask_detect_fail"
 msgstr ""
 
-# Match @ %(addr)s 
+# Match @ %(addr)s\n
 msgid "match_at"
 msgstr ""
 
@@ -406,23 +406,23 @@ msgstr ""
 msgid "match_count_unavailable"
 msgstr ""
 
-# Match @ %(addr)s in %(func)s 
+# Match @ %(addr)s in %(func)s\n
 msgid "match_in"
 msgstr ""
 
-# No unique signature inside function %(func_start)s; trying xref signatures... 
+# No unique signature inside function %(func_start)s; trying xref signatures...\n
 msgid "no_fn_sig"
 msgstr ""
 
-# No signature entered! 
+# No signature entered!\n
 msgid "no_sig_entered"
 msgstr ""
 
-# No unique signature found for function %(func_start)s (no unique sig within body and no usable xrefs) 
+# No unique signature found for function %(func_start)s (no unique sig within body and no usable xrefs)\n
 msgid "no_sig_found"
 msgstr ""
 
-# No XREFs have been found for your address 
+# No XREFs have been found for your address\n
 msgid "no_xrefs"
 msgstr ""
 
@@ -430,7 +430,7 @@ msgstr ""
 msgid "ok"
 msgstr ""
 
-# Operation canceled by user 
+# Operation canceled by user\n
 msgid "operation_canceled"
 msgstr ""
 
@@ -442,7 +442,7 @@ msgstr ""
 msgid "partial_unique_for"
 msgstr ""
 
-# Place cursor inside a function first. 
+# Place cursor inside a function first.\n
 msgid "place_cursor_fn"
 msgstr ""
 
@@ -454,7 +454,7 @@ msgstr ""
 msgid "plugin_info"
 msgstr ""
 
-# Copy selected code  Building a signature for the selected address range.  Press Cancel to stop
+# Copy selected code\n\nBuilding a signature for the selected address range.\n\nPress Cancel to stop
 msgid "progress.copy_code"
 msgstr ""
 
@@ -466,15 +466,15 @@ msgstr ""
 msgid "progress.copy_segments"
 msgstr ""
 
-# Create unique signature (from cursor address)  Growing a pattern from the current address until it matches exactly one place in the binary.  Press Cancel to stop
+# Create unique signature (from cursor address)\n\nGrowing a pattern from the current address until it matches exactly one place in the binary.\n\nPress Cancel to stop
 msgid "progress.create_unique"
 msgstr ""
 
-# Find shortest function signature  Trying every instruction in the function as a start point; growing each until unique and keeping the shortest.  Press Cancel to stop
+# Find shortest function signature\n\nTrying every instruction in the function as a start point; growing each until unique and keeping the shortest.\n\nPress Cancel to stop
 msgid "progress.find_fn_sig"
 msgstr ""
 
-# Find shortest function signature Trying every instruction as a start point; keeping the shortest unique one.  Function:     %(fn_bounds)s  (%(fn_size)d bytes) Anchor (#%(idx)d): %(anchor)s Inner search: %(inner_bounds)s  (%(inner_length)d bytes, %(inner_matches_str)s) Best found:   %(best)s Candidates:   %(candidates_count)d unique so far Elapsed:      %(elapsed)d  Press Cancel to stop
+# Find shortest function signature\nTrying every instruction as a start point; keeping the shortest unique one.\n\nFunction:     %(fn_bounds)s  (%(fn_size)d bytes)\nAnchor (#%(idx)d): %(anchor)s\nInner search: %(inner_bounds)s  (%(inner_length)d bytes, %(inner_matches_str)s)\nBest found:   %(best)s\nCandidates:   %(candidates_count)d unique so far\nElapsed:      %(elapsed)d\n\nPress Cancel to stop
 msgid "progress.fn_sig_detail"
 msgstr ""
 
@@ -486,15 +486,15 @@ msgstr ""
 msgid "progress.processing_total"
 msgstr ""
 
-# Search for a signature  Scanning %(scope)s for your pattern.  Press Cancel to stop
+# Search for a signature\n\nScanning %(scope)s for your pattern.\n\nPress Cancel to stop
 msgid "progress.search_sig"
 msgstr ""
 
-# Create unique signature (from cursor address) Growing a pattern from the current address until it matches exactly one place in the binary.  Length:  %(length)s bytes Matches: %(matches)s Elapsed: %(elapsed)s  Press Cancel to stop
+# Create unique signature (from cursor address)\nGrowing a pattern from the current address until it matches\nexactly one place in the binary.\n\nLength:  %(length)s bytes\nMatches: %(matches)s\nElapsed: %(elapsed)s\n\nPress Cancel to stop
 msgid "progress.unique_sig_detail"
 msgstr ""
 
-# Find shortest XREF signature  Processing xref %(i)d of %(total)d (%(pct).1f%%)...  Suitable Signatures: %(suitable)d Shortest Signature: %(shortest)d Bytes
+# Find shortest XREF signature\n\nProcessing xref %(i)d of %(total)d (%(pct).1f%%)...\n\nSuitable Signatures: %(suitable)d\nShortest Signature: %(shortest)d Bytes
 msgid "progress.xref_progress"
 msgstr ""
 
@@ -506,7 +506,7 @@ msgstr ""
 msgid "scanning"
 msgstr ""
 
-# Select a range to copy the code! 
+# Select a range to copy the code!\n
 msgid "select_range"
 msgstr ""
 
@@ -514,27 +514,27 @@ msgstr ""
 msgid "sig_already"
 msgstr ""
 
-# Error: %(msg)s 
+# Error: %(msg)s\n
 msgid "sig_error"
 msgstr ""
 
-# Signature for %(address)s%(func)s: %(fmted)s 
+# Signature for %(address)s%(func)s: %(fmted)s\n
 msgid "sig_for"
 msgstr ""
 
-# Signature does not match! 
+# Signature does not match!\n
 msgid "sig_no_match"
 msgstr ""
 
-# %(prefix)s: %(fmted)s 
+# %(prefix)s: %(fmted)s\n
 msgid "sig_prefix"
 msgstr ""
 
-# Signature: %(fmted)s 
+# Signature: %(fmted)s\n
 msgid "sig_result"
 msgstr ""
 
-# Signature: %(sig)s 
+# Signature: %(sig)s\n
 msgid "sig_search_result"
 msgstr ""
 
@@ -542,22 +542,22 @@ msgstr ""
 msgid "size_bytes"
 msgstr ""
 
-# Top %(top)d Signatures out of %(total)d xrefs: 
+# Top %(top)d Signatures out of %(total)d xrefs:\n
 msgid "top_xrefs"
 msgstr ""
 
-# Unrecognized signature type 
+# Unrecognized signature type\n
 msgid "unrecognized_sig"
 msgstr ""
 
-# Falling back to xref signatures...  Press Cancel to stop
+# Falling back to xref signatures...\n\nPress Cancel to stop
 msgid "xref_fallback"
 msgstr ""
 
-# XREF Signature #%(num)d @ %(addr)s%(func)s: %(sig)s 
+# XREF Signature #%(num)d @ %(addr)s%(func)s: %(sig)s\n
 msgid "xref_sig"
 msgstr ""
 
-# Xref signature into %(func_start)s (from %(addr)s): 
+# Xref signature into %(func_start)s (from %(addr)s):\n
 msgid "xref_sig_into"
 msgstr ""
