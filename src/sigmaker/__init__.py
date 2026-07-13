@@ -3215,7 +3215,7 @@ class ConfigureOperandWildcardBitmaskForm(idaapi.Form):
 
         proc_arch = idaapi.ph_get_id()
         if proc_arch == idaapi.PLFM_386:
-            form_text += self._X86_TEMPLATE
+            form_text += self._X86_SECTION
             registers.extend(
                 [
                     "opt8",
@@ -3230,12 +3230,10 @@ class ConfigureOperandWildcardBitmaskForm(idaapi.Form):
                 ]
             )
         elif proc_arch == idaapi.PLFM_ARM:
-            form_text += self._ARM_TEMPLATE
-            registers.extend(
-                ["opt8", "opt9", "opt10", "opt11", "opt12", "opt13", "opt14"]
-            )
+            form_text += self._ARM_SECTION
+            registers.extend(["opt8", "opt9", "opt10", "opt11", "opt12", "opt13", "opt14"])
         elif proc_arch == idaapi.PLFM_PPC:
-            form_text += self._PPC_TEMPLATE
+            form_text += self._PPC_SECTION
             registers.extend(["opt8", "opt9", "opt10", "opt11", "opt12", "opt13"])
         else:
             form_text += self._FALLBACK_TEMPLATE
