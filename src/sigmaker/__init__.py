@@ -79,6 +79,7 @@ def _load_speedups_sibling() -> bool:
     import importlib.util
 
     def _try_load(speedups_dir: pathlib.Path) -> bool:
+        global simd_scan, _SimdSignature, _simd_scan_bytes, SIMD_SPEEDUP_AVAILABLE
         for suffix in importlib.machinery.EXTENSION_SUFFIXES:
             candidate = speedups_dir / f"simd_scan{suffix}"
             if not candidate.exists():
