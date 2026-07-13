@@ -69,8 +69,8 @@ msgstr "请稍候，正在复制段..."
 msgid "Please stand by, copying the segment..."
 msgstr "请稍候，正在复制段..."
 
-msgid "Find shortest XREF signature\n\nProcessing xref %(i)d of %(total)d (%(pct).1f%%...\n\nSuitable Signatures: %(found)d\nShortest Signature: %(shortest)d Bytes"
-msgstr "查找最短 XREF 签名\n\n正在处理 xref %(i)d / %(total)d (%(pct).1f%%...\n\n合适签名：%(found)d\n最短签名：%(shortest)d 字节"
+msgid "Find shortest XREF signature\n\nProcessing xref %(i)d of %(total)d (%(pct).1f%%)...\n\nSuitable Signatures: %(suitable)d\nShortest Signature: %(shortest)d Bytes"
+msgstr "查找最短 XREF 签名\n\n正在处理 xref %(i)d / %(total)d (%(pct).1f%%...\n\n合适签名：%(suitable)d\n最短签名：%(shortest)d 字节"
 
 msgid "Error: Empty signature\n"
 msgstr "错误：空签名\n"
@@ -189,14 +189,14 @@ msgstr "指向 %(func_start)s 的 Xref 签名（来自 %(addr)s）：\n"
 msgid "No unique signature found for function %(func_start)s (no unique sig within body and no usable xrefs)\n"
 msgstr "未找到函数 %(func_start)s 的唯一签名（函数体内无唯一签名且无可用 xref）\n"
 
-msgid "Error: End address %(end)s must be greater than start address %(start)s."
-msgstr "错误：结束地址 %(end)s 必须大于开始地址 %(start)s。"
+msgid "Error: End address %(end_addr)s must be greater than start address %(start_addr)s."
+msgstr "错误：结束地址 %(end_addr)s 必须大于开始地址 %(start_addr)s。"
 
-msgid "No end address selected, using line end: %(end)s"
-msgstr "未选择结束地址，使用行尾：%(end)s"
+msgid "No end address selected, using line end: %(ea)s"
+msgstr "未选择结束地址，使用行尾：%(ea)s"
 
-msgid "Error setting clipboard text: %(error)s"
-msgstr "设置剪贴板文本出错：%(error)s"
+msgid "Error setting clipboard text: %(e)s"
+msgstr "设置剪贴板文本出错：%(e)s"
 
 msgid "Unrecognized signature type\n"
 msgstr "无法识别的签名类型\n"
