@@ -33,9 +33,6 @@ msgstr "{cWildcardableOperands}>\n"
 msgid "BUTTON YES* OK\nBUTTON CANCEL Cancel\nOptions\n\n<#Print top X shortest signatures when generating xref signatures#Print top X XREF signatures     :{opt1}>\n<#Stop after reaching X bytes when generating a single signature#Maximum single signature length :{opt2}>\n<#Stop after reaching X bytes when generating xref signatures#Maximum xref signature length   :{opt3}>\n<#Seconds before the first 'Continue?' prompt fires. -1 disables the prompt entirely (default).#Prompt interval (seconds, -1 disables):{opt4}>\n"
 msgstr "BUTTON YES* OK\nBUTTON CANCEL Cancel\n选项\n\n<#生成 xref 签名时打印最短的前 X 个签名#打印前 X 个 XREF 签名     :{opt1}>\n<#为单个签名生成达到 X 字节时停止#最大单个签名长度 :{opt2}>\n<#生成 xref 签名达到 X 字节时停止#最大 xref 签名长度   :{opt3}>\n<#第一个“继续？”提示触发前的秒数。-1 完全禁用提示（默认）。#提示间隔（秒，-1 禁用）:{opt4}>\n"
 
-msgid "STARTITEM 0\nBUTTON YES* OK\nBUTTON CANCEL Cancel\n%(title)s\n{FormChangeCb}\nSelect action:\n<#Select an address, and create a code signature for it#Create unique signature for current code address:{rCreateUniqueSig}>\n<#Select an address or variable, and create code signatures for its references. Will output the shortest 5 signatures#Find shortest XREF signature for current data or code address:{rFindXRefSig}>\n<#Select 1+ instructions, and copy the bytes using the specified output format#Copy selected code:{rCopyCode}>\n<#Paste any string containing your signature/mask and find matches#Search for a signature:{rSearchSignature}>\n<#Find the shortest unique signature anywhere inside the current function, with automatic xref fallback if the function body is not unique#Find shortest unique signature for current function:{rFindFunctionSig}>{rAction}>\n\nOutput format:\n<#Example - E8 ? ? ? ? 45 33 F6 66 44 89 34 33#IDA Signature:{rIDASig}>\n<#Example - E8 ?? ?? ?? ?? 45 33 F6 66 44 89 34 33#x64Dbg Signature:{rx64DbgSig}>\n<#Example - \\\\\\xE8\\\\\\x00\\\\\\x00\\\\\\x00\\\\\\x00\\\\\\x45\\\\\\x33\\\\\\xF6\\\\\\x66\\\\\\x44\\\\\\x89\\\\\\x34\\\\\\x33 x????xxxxxxxx#C Byte Array Signature String + String mask:{rByteArrayMaskSig}>\n<#Example - 0xE8, 0x00, 0x00, 0x00, 0x00, 0x45, 0x33, 0xF6, 0x66, 0x44, 0x89, 0x34, 0x33 0b1111111100001#C Bytes Signature + Bitmask:{rRawBytesBitmaskSig}>{rOutputFormat}>\n\nQuick Options:\n<#Enable wildcarding for operands, to improve stability of created signatures#Wildcards for operands:{cWildcardOperands}>\n<#Don't stop signature generation when reaching end of function#Continue when leaving function scope:{cContinueOutside}>\n<#Wildcard the whole instruction when the operand (usually a register) is encoded into the operator#Wildcard optimized / combined instructions:{cWildcardOptimized}>\n<#Opt-in -- show periodic 'Continue?' prompts while generating. Default is a wait-box with a Cancel button.#Enable continue prompt (opt-in):{cEnablePrompt}>\n<#Opt-in -- when you cancel a unique-signature search, output the partial signature (with match count) instead of nothing. Default off. (Issue #22)#Output partial signature on cancel (opt-in):{cOutputPartialOnCancel}>\n<#Opt-in -- scope to the segment containing the anchor instead of the whole database, so functions duplicated across segments (e.g. a boot section and a main section) can be signed. Creation checks uniqueness within that segment; Search is scoped to the segment under your cursor. (Issue #64)#Limit uniqueness and search to the containing segment (opt-in):{cScopeToSegment}>{cGroupOptions}>\n\n<Operand types...:{bOperandTypes}><Other options...:{bOtherOptions}>\n"
-msgstr ""
-
 msgid "Select location in disassembly and press CTRL+ALT+S to open menu"
 msgstr "在反汇编中选择位置，按 CTRL+ALT+S 打开菜单"
 
@@ -44,9 +41,6 @@ msgstr "%(name)s v%(version)s 适用于 IDA Pro，作者 %(author)s"
 
 msgid "Continue?"
 msgstr "继续？"
-
-msgid "scanning..."
-msgstr ""
 
 msgid "%(func)s has been running for %(time)s."
 msgstr "%(func)s 已运行 %(time)s。"
@@ -80,12 +74,6 @@ msgstr "签名不匹配！\n"
 
 msgid "Unrecognized signature type\n"
 msgstr "无法识别的签名类型\n"
-
-msgid "%(count)d matches so far"
-msgstr ""
-
-msgid "%(size)d bytes"
-msgstr ""
 
 msgid "SigMaker"
 msgstr "SigMaker"
@@ -147,9 +135,6 @@ msgstr "查找最短 XREF 签名\n\n正在处理 xref %(i)d / %(total)d (%(pct).
 msgid "Search for a signature\n\nScanning %(scope)s for your pattern.\n\nPress Cancel to stop"
 msgstr "搜索签名\n\n正在扫描 %(scope)s 中的模式。\n\n按取消停止"
 
-msgid "Operation canceled by user\n"
-msgstr ""
-
 msgid "Function signature (offset +%(offset)s into function %(func_start)s%(func_name)s):\n"
 msgstr "函数签名（偏移 +%(offset)s 进入函数 %(func_start)s%(func_name)s）：\n"
 
@@ -177,9 +162,6 @@ msgstr "请稍候，正在复制段..."
 msgid "Error setting clipboard text: %(e)s"
 msgstr "设置剪贴板文本出错：%(e)s"
 
-msgid "Error: %(msg)s\n"
-msgstr ""
-
 msgid "No unique signature inside function %(func_start)s; trying xref signatures...\n"
 msgstr "函数 %(func_start)s 内无唯一签名；正在尝试 xref 签名...\n"
 
@@ -188,9 +170,6 @@ msgstr "检测到掩码 \"%(mask)s\"，但未能匹配对应的字节\n"
 
 msgid "Processing (%(idx)d/%(total)d) | Elapsed: %(elapsed)ds"
 msgstr "处理中 (%(idx)d/%(total)d) | 已用: %(elapsed)ds"
-
-msgid "Processing (%(idx)d) | Elapsed: %(elapsed)ds"
-msgstr ""
 
 msgid "Select a range to copy the code!\n"
 msgstr "请选择要复制代码的范围！\n"
