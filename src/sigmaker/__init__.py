@@ -27,7 +27,15 @@ import idc
 from sigmaker.i18n import _
 
 __author__ = "mahmoudimus"
-__version__ = "1.11.0"
+
+try:
+    from importlib.metadata import version as _pkg_version
+    __version__ = _pkg_version("sigmaker")
+except Exception:
+    try:
+        from ._version import __version__
+    except ImportError:
+        __version__ = "0.0.0"
 
 PLUGIN_NAME: str = "Signature Maker (py)"
 PLUGIN_VERSION: str = __version__

@@ -182,6 +182,9 @@ c*?_debug/
 !include/**/*.hxx
 !include/**/*.hpp
 
+# setuptools-scm generated version file
+src/sigmaker/_version.py
+
 # Ignore compiled source files
 src/**/*.cpp
 src/**/*.so

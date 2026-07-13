@@ -1,45 +1,40 @@
 #!/usr/bin/env python3
-"""Keep ``ida-plugin.json``'s version in sync with ``sigmaker.__version__``.
+"""Keep ``ida-plugin.json``'s version in sync with the latest git tag.
 
-The single source of truth for the version is ``__version__`` in
-``src/sigmaker/__init__.py`` (``pyproject.toml`` already derives the package
-version from it). The IDA Plugin Repository and ``hcli`` read the version out
-of ``ida-plugin.json``, so the two must agree. This script copies the package
-version into the manifest.
-
-It reads ``__version__`` by parsing the source with ``ast`` rather than
-importing the module, because importing ``sigmaker`` pulls in ``idaapi``,
-which only exists inside IDA. The manifest is rewritten with a targeted
-substitution so the rest of its formatting is left untouched.
+The single source of truth for the version is the latest ``v*`` git tag;
+``setuptools-scm`` derives the package version from it at build time. The IDA
+Plugin Repository and ``hcli`` read the version out of ``ida-plugin.json``,
+so the two must agree. This script copies the git tag version into the
+manifest.
 
 Usage:
     python tools/sync_plugin_version.py            # write the manifest in place
     python tools/sync_plugin_version.py --check     # exit 1 if out of sync, no write
 
-The pre-commit hook in ``.githooks/`` runs the writing form; the unit test
-``TestPluginManifestVersion`` and CI act as the backstop.
+The pre-commit hook in ``.githooks/`` runs the writing form; CI acts as the
+backstop.
 """
 import argparse
-import ast
 import json
 import pathlib
 import re
+import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-INIT = ROOT / "src" / "sigmaker" / "__init__.py"
 MANIFEST = ROOT / "ida-plugin.json"
 
 
-def package_version() -> str:
-    """Return ``__version__`` from the package source without importing it."""
-    tree = ast.parse(INIT.read_text(encoding="utf-8"))
-    for node in tree.body:
-        if isinstance(node, ast.Assign) and any(
-            isinstance(t, ast.Name) and t.id == "__version__" for t in node.targets
-        ):
-            return ast.literal_eval(node.value)
-    raise SystemExit(f"could not find __version__ in {INIT}")
+def git_tag_version() -> str:
+    """Return the latest ``v*`` tag, or ``\"0.0.0\"`` if none exists."""
+    try:
+        tag = subprocess.run(
+            ["git", "describe", "--tags", "--match", "v*", "--abbrev=0"],
+            capture_output=True, text=True, cwd=ROOT, check=True,
+        ).stdout.strip()
+        return tag.lstrip("v")
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return "0.0.0"
 
 
 def manifest_version(text: str) -> str:
@@ -51,11 +46,11 @@ def main(argv=None) -> int:
     parser.add_argument(
         "--check",
         action="store_true",
-        help="verify the manifest matches the package version; do not write",
+        help="verify the manifest matches the git tag; do not write",
     )
     args = parser.parse_args(argv)
 
-    version = package_version()
+    version = git_tag_version()
     text = MANIFEST.read_text(encoding="utf-8")
     current = manifest_version(text)
 
@@ -64,13 +59,12 @@ def main(argv=None) -> int:
 
     if args.check:
         print(
-            f"ida-plugin.json version {current!r} != sigmaker.__version__ "
+            f"ida-plugin.json version {current!r} != git tag version "
             f"{version!r}; run: python tools/sync_plugin_version.py",
             file=sys.stderr,
         )
         return 1
 
-    # Replace only the version string, so the manifest's formatting is preserved.
     new_text, n = re.subn(
         r'("version"\s*:\s*")[^"]*(")', r"\g<1>" + version + r"\g<2>", text, count=1
     )
