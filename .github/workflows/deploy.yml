@@ -37,6 +37,15 @@ jobs:
 
           steps:
             - uses: actions/checkout@v5
+              with:
+                  fetch-tags: true
+
+            - name: Detect version for setuptools-scm
+              id: version
+              run: |
+                  VERSION=$(git describe --tags --match "v*" --abbrev=0 2>/dev/null | sed 's/^v//' || echo "0.0.0")
+                  echo "Detected version: $VERSION"
+                  echo "version=$VERSION" >> $GITHUB_OUTPUT
 
             - name: Compile translations
               run: |
@@ -47,6 +56,7 @@ jobs:
               env:
                   # Build CPython 3.10+ wheels only (as required by project)
                   CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-*"
+                  SETUPTOOLS_SCM_PRETEND_VERSION: ${{ steps.version.outputs.version }}
                   # Compile translations in the isolated build container
                   CIBW_BEFORE_BUILD: "python tools/po2mo.py src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.po src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.mo"
                   # if no annotation for this build group, this shouldn't be skipped
@@ -66,6 +76,15 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v5
+              with:
+                  fetch-tags: true
+
+            - name: Detect version for setuptools-scm
+              id: version
+              run: |
+                  VERSION=$(git describe --tags --match "v*" --abbrev=0 2>/dev/null | sed 's/^v//' || echo "0.0.0")
+                  echo "Detected version: $VERSION"
+                  echo "version=$VERSION" >> $GITHUB_OUTPUT
 
             - &display-version
               name: Display version
@@ -90,6 +109,8 @@ jobs:
 
             - &build-sdist
               name: Build sdist
+              env:
+                  SETUPTOOLS_SCM_PRETEND_VERSION: ${{ steps.version.outputs.version }}
               run: |
                   rm -rf dist/*
                   python -m build --sdist

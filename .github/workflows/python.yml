@@ -72,6 +72,13 @@ jobs:
                   echo "Loading Docker image from cache..."
                   docker load -i /tmp/docker-cache/${{ matrix.service }}.tar || echo "No cached image to load."
 
+            - name: Detect version for setuptools-scm
+              id: version
+              run: |
+                  VERSION=$(git describe --tags --match "v*" --abbrev=0 2>/dev/null | sed 's/^v//' || echo "0.0.0")
+                  echo "Detected version: $VERSION"
+                  echo "version=$VERSION" >> $GITHUB_OUTPUT
+
             - name: Compile translations
               run: |
                   python tools/po2mo.py src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.po src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.mo
@@ -79,7 +86,9 @@ jobs:
             - name: Run tests
               run: |
                   set -e
-                  docker compose run --rm --entrypoint bash ${{ matrix.service }} -c "
+                  docker compose run --rm --entrypoint bash \
+                      -e SETUPTOOLS_SCM_PRETEND_VERSION=${{ steps.version.outputs.version }} \
+                      ${{ matrix.service }} -c "
                       set -e
                       pip install -e .[ci]
                       python tools/po2mo.py src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.po src/sigmaker/locale/zh_CN/LC_MESSAGES/sigmaker.mo
